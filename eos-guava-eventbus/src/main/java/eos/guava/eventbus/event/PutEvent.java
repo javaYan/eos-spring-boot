@@ -8,11 +8,11 @@ import java.util.Map;
  * Created by yanyuyu on 2016/12/30.
  */
 @ToString
-public class MapEvent {
+public class PutEvent {
 
     private Map<String,Object> data;
 
-    public MapEvent(Map<String,Object> data) {
+    public PutEvent(Map<String,Object> data) {
         this.data = data;
     }
 }

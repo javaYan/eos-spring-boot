@@ -6,11 +6,11 @@ import lombok.ToString;
  * Created by yanyuyu on 2016/12/30.
  */
 @ToString
-public class LongEvent {
+public class DeleteEvent {
 
     private Long id;
 
-    public LongEvent(Long id) {
+    public DeleteEvent(Long id) {
         this.id = id;
     }
 
