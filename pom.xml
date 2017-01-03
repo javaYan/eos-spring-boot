@@ -10,7 +10,6 @@
     <modules>
         <module>eos-guava-eventbus</module>
         <module>eos-guava-cache</module>
-        <module>eos-guava-cache</module>
     </modules>
     <packaging>pom</packaging>
 
