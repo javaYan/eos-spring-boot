@@ -10,6 +10,8 @@
     <modules>
         <module>eos-guava-eventbus</module>
         <module>eos-guava-cache</module>
+        <module>eos-spring-utils</module>
+        <module>eos-java-practice</module>
     </modules>
     <packaging>pom</packaging>
 
