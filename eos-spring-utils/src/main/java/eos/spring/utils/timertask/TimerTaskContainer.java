@@ -2,6 +2,7 @@ package eos.spring.utils.timertask;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -15,6 +16,9 @@ import java.util.*;
 public class TimerTaskContainer implements InitializingBean {
 
     private static Map<Integer,Timer> timerTaskMap;
+
+    @Autowired
+    private TimerBizService timerBizService;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -38,6 +42,7 @@ public class TimerTaskContainer implements InitializingBean {
             @Override
             public void run() {
                 log.info("ID-{}已经执行", id);
+                timerBizService.executeByBatch(id);
             }
         };
         Timer timer = new Timer();
@@ -54,6 +59,7 @@ public class TimerTaskContainer implements InitializingBean {
             @Override
             public void run() {
                 log.info("ID修改-{}已经执行", id);
+                timerBizService.executeByBatch(id);
             }
         };
         Timer timer = new Timer();
