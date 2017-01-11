@@ -1,4 +1,4 @@
-package eos.spring.utils.timertask;
+package eos.java.practice.timer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,13 +11,13 @@ import java.util.Map;
 /**
  * Created by yanyuyu on 2017/1/4.
  */
-@RestController("timerTask")
+@RestController
 public class TimerTaskController {
 
     @Autowired
     private TimerTaskContainer timerTaskContainer;
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(value="timerTask",method = RequestMethod.PUT)
     public Map<String,Object> doPut(Integer id) {
         timerTaskContainer.updateTimer(id);
         Map<String,Object> map = new HashMap<String,Object>();
@@ -25,7 +25,7 @@ public class TimerTaskController {
         return map;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value="timerTask",method = RequestMethod.POST)
     public Map<String,Object> doPost(Integer id) {
         timerTaskContainer.addTimer(id);
         Map<String,Object> map = new HashMap<String,Object>();
@@ -33,7 +33,7 @@ public class TimerTaskController {
         return map;
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
+    @RequestMapping(value="timerTask",method = RequestMethod.DELETE)
     public Map<String,Object> doDelete(Integer id) {
         timerTaskContainer.removeTimer(id);
         Map<String,Object> map = new HashMap<String,Object>();

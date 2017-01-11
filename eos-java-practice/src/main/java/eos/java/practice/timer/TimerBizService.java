@@ -1,4 +1,4 @@
-package eos.spring.utils.timertask;
+package eos.java.practice.timer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

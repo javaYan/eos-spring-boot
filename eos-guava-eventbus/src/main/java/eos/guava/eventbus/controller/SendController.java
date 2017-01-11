@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Created by yanyuyu on 2016/12/30.
  */
-@RestController("send")
+@RestController
 public class SendController {
 
     private static Logger logger =  LoggerFactory.getLogger(SendController.class);
@@ -26,14 +26,14 @@ public class SendController {
     @Autowired
     private EventDispatcher eventDispatcher;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value="send",method = RequestMethod.GET)
     public void doGet(@RequestParam(name = "id") String id) {
         logger.info("Get : " + id);
         Object object = new Object();
         eventDispatcher.publish(object);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(value="send",method = RequestMethod.POST)
     public void doPost(@RequestParam(name = "id") String id) {
 
         logger.info("Post : " + id);
@@ -46,7 +46,7 @@ public class SendController {
         eventDispatcher.publish(myEvent2);
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(value="send",method = RequestMethod.PUT)
     public void doPut(@RequestParam(name = "id") String id) {
         logger.info("Put : " + id);
         Map<String, Object> mapData = new HashMap<String, Object>();
@@ -56,7 +56,7 @@ public class SendController {
         eventDispatcher.publish(mapEvent);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
+    @RequestMapping(value="send",method = RequestMethod.DELETE)
     public void doDelete(@RequestParam(name = "id") String id) {
         logger.info("Delete : " + id);
         DeleteEvent event = new DeleteEvent(9527L);

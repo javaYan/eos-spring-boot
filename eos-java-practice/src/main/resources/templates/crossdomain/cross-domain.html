@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <p id="p_result"></p>
+
+    <button type="button" onclick="return no_cross();">非跨域访问</button>
+    <button type="button" onclick="return cross();">跨域访问</button>
+</body>
+
+<!--引入静态文件-->
+<script type="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+
+<script type="text/javascript" >
+
+    function no_cross() {
+        $.ajax({
+            type: "GET",
+            url: "/noCross",
+            success: function(msg){
+                $("#p_result").text(msg.result);
+            }
+        });
+    }
+
+    function cross() {
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:7590/cross",
+            crossDomain:true,
+            success: function(msg){
+                $("#p_result").text(msg.result);
+            }
+        });
+    }
+</script>
+</html>

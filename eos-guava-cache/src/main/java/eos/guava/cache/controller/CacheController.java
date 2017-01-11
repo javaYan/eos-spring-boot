@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Mr_yyy on 2016/12/31.
  */
-@RestController("cache")
+@RestController
 public class CacheController {
 
     private static Logger log = LoggerFactory.getLogger(CacheController.class);
@@ -32,7 +32,7 @@ public class CacheController {
                 }
             });
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value="cache",method = RequestMethod.GET)
     public CacheVo doGet(@RequestParam(name = "key") String key) {
         long startTime = System.currentTimeMillis();
         String value = null;
@@ -53,7 +53,7 @@ public class CacheController {
         return vo;
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
+    @RequestMapping(value="cache",method = RequestMethod.DELETE)
     public CacheVo doDelete() {
         long startTime = System.currentTimeMillis();
         caches.invalidateAll();
@@ -66,7 +66,7 @@ public class CacheController {
         return vo;
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(value="cache",method = RequestMethod.PUT)
     public CacheVo doPut(@RequestParam(name="key") String key) {
         CacheVo vo = new CacheVo();
         long startTime = System.currentTimeMillis();
