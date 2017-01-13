@@ -12,6 +12,7 @@
         <module>eos-guava-cache</module>
         <module>eos-spring-utils</module>
         <module>eos-java-practice</module>
+        <module>eos-springboot-db</module>
     </modules>
     <packaging>pom</packaging>
 
