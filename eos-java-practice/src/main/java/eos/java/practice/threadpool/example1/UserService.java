@@ -38,7 +38,7 @@ public class UserService {
                 public void run() {
                     try {
                         System.out.println("splitUserIds --- " + splitUserIds.toString());
-                        Thread.sleep(10);
+                        Thread.sleep(3000);
                         usersMap.putAll(loadUsers(splitUserIds));
                     } catch (InterruptedException ie) {
                         ie.printStackTrace();
