@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Created by Mr_yyy on 2017/2/20.
+ * Created by Mr_yyy on 2017/2/20..
  */
 @Getter @Setter @ToString
 public class UserVo {
