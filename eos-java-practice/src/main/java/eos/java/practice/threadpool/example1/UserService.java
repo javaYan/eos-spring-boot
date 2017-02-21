@@ -16,17 +16,18 @@ public class UserService {
 
     private final static int BATCH_USERS_PER_THEAD = 50;
 
+    private final static int THREAD_POOL_SIZE = 10;
+
     public Map<Long,UserVo> batchExecute(List<Long> userIds) {
         long startTime = System.currentTimeMillis();
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 10, 1000, TimeUnit.SECONDS, new ArrayBlockingQueue(3000));
-
+        Executor executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         final ConcurrentHashMap<Long, UserVo> usersMap = new ConcurrentHashMap<Long,UserVo>();
         int size = userIds.size();
-        int batchs = size/BATCH_USERS_PER_THEAD;
+        int batches = size/BATCH_USERS_PER_THEAD;
         if(size % BATCH_USERS_PER_THEAD != 0) {
-            batchs ++;
+            batches ++;
         }
-        final CountDownLatch countDownLatch = new CountDownLatch(batchs);
+        final CountDownLatch countDownLatch = new CountDownLatch(batches);
 
         for(int i=0; i < size; i+=BATCH_USERS_PER_THEAD ) {
             int fromIndex = i;
@@ -37,7 +38,7 @@ public class UserService {
                 public void run() {
                     try {
                         System.out.println("splitUserIds --- " + splitUserIds.toString());
-                        Thread.sleep(3000);
+                        Thread.sleep(10);
                         usersMap.putAll(loadUsers(splitUserIds));
                     } catch (InterruptedException ie) {
                         ie.printStackTrace();
@@ -56,7 +57,7 @@ public class UserService {
             e.printStackTrace();
         }
         long endTime = System.currentTimeMillis();
-        System.out.println(usersMap.keySet().toString());
+        System.out.println("total " + usersMap.keySet().size() +":"+ usersMap.keySet().toString());
         System.out.println("cost " + (endTime - startTime ) / 1000 + " s");
         return usersMap;
     }
