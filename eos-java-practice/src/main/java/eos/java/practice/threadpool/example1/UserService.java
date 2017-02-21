@@ -68,8 +68,8 @@ public class UserService {
         for(int i=0; i<size; i++) {
             UserVo vo = new UserVo();
             vo.setId(userIds.get(i));
-            vo.setIcon("http://"+userIds.get(i)+".jpg");
-            vo.setNickname("kick_"+String.format("%3d",userIds.get(i)));
+            vo.setIcon("http://"+String.format("%06d",userIds.get(i))+".jpg");
+            vo.setNickname("kick_"+String.format("%06d",userIds.get(i)));
             usersMap.put(userIds.get(i), vo);
         }
         return usersMap;
