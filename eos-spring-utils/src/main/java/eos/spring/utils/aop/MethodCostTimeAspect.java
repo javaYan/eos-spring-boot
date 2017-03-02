@@ -1,10 +1,12 @@
 package eos.spring.utils.aop;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,7 +14,8 @@ import org.springframework.stereotype.Component;
  */
 @Aspect
 @Component
-public class MethodAspect {
+@Order(2) //指定切面优先级  越大越优先
+public class MethodCostTimeAspect {
     @Pointcut("execution(* eos.spring.utils.aop.DemoAopService.*(..))")
     private void pointCutMethod() {
     }
@@ -33,7 +36,7 @@ public class MethodAspect {
     }
 
     @Before("pointCutMethod()")
-    public void doBefore() {
-        System.out.println("do before ..");
+    public void doBefore(JoinPoint joinPoint) {
+        System.out.println(joinPoint.getTarget().getClass().getName()+"."+joinPoint.getSignature().getName() + "开始执行...");
     }
 }

@@ -15,4 +15,9 @@ public class DemoAopService {
     }
 
     public void work(String workId, Date workTime) { System.out.println("DemoAopService work execute !"); }
+
+    public void ex() {
+        int num = 1/0;
+    }
+
 }

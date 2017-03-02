@@ -22,7 +22,13 @@ public class DemoAopController {
         demoAopService.init(dto);
     }
 
+    @RequestMapping(value="work",method= RequestMethod.GET)
     public void work() {
         demoAopService.work("work_1",new Date());
+    }
+
+    @RequestMapping(value="ex",method= RequestMethod.GET)
+    public void ex() {
+        demoAopService.ex();
     }
 }
