@@ -2,6 +2,7 @@ package eos.springboot.db.mongo.common;
 
 import eos.springboot.db.mongo.entity.PageBean;
 import eos.springboot.db.mongo.entity.PageParam;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
@@ -98,8 +99,17 @@ public interface BaseMongoDao<T> {
      * @param query
      * @return
      */
-    public int count(Query query);  
-    
+	@Deprecated
+    public int count(Query query);
+
+	/**
+	 *
+	 * @Description 求数据总和
+	 * @param criteria
+	 * @return
+	 */
+	public int aggregateCount(Criteria criteria);
+
     /**
      * @Description 查找并且删除--批量
      */

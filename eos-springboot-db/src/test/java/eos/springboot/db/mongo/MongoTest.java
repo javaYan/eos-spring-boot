@@ -43,4 +43,11 @@ public class MongoTest {
             }
         }
     }
+
+    @Test
+    public void testCount() {
+        int count = demoMGDao.count(new Query(Criteria.where("flag").gt(9)));
+        int aggregateCount = demoMGDao.aggregateCount(Criteria.where("flag").gt(9));
+        System.out.println(count + "," + aggregateCount);
+    }
 }

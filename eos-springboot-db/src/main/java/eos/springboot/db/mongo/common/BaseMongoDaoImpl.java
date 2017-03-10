@@ -6,6 +6,9 @@ import eos.springboot.db.mongo.entity.PageParam;
 import eos.springboot.db.util.ReflectUtil;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -187,6 +190,21 @@ public abstract class BaseMongoDaoImpl<T> implements BaseMongoDao<T> {
 	@Override
 	public int count(Query query) {
 		return (int) mongoTemplate.count(query, this.getEntityClass()); 
+	}
+
+	/**
+	 *
+	 * @Description 求数据总和
+	 * @param criteria
+	 * @return
+	 */
+	public int aggregateCount(Criteria criteria) {
+		Aggregation aggregation = Aggregation.newAggregation(
+				Aggregation.match(criteria),
+				Aggregation.group("id").count().as("total"));
+		AggregationResults<AggregationCount> aggRes = mongoTemplate.aggregate(aggregation,this.getEntityClass(),AggregationCount.class);
+		List<AggregationCount> mappedResults = aggRes.getMappedResults();
+		return mappedResults.size();
 	}
 	
 	private Class<T> getEntityClass(){  
