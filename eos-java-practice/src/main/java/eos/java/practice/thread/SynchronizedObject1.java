@@ -6,24 +6,30 @@ import lombok.Setter;
 /**
  * Created by yanyuyu on 2017/3/17.
  */
-public class SynchronizedObject {
+public class SynchronizedObject1 {
 
-    public synchronized void sleep() throws InterruptedException {
-        System.out.println(Thread.currentThread().getName() + " sleep");
-        Thread.sleep(2000);
-        System.out.println(Thread.currentThread().getName() + " quit sleep");
+    private static byte[] lockByte = new byte[1];
+
+    public void sleep() throws InterruptedException {
+        synchronized (lockByte) {
+            System.out.println(Thread.currentThread().getName() + " sleep");
+            Thread.sleep(2000);
+            System.out.println(Thread.currentThread().getName() + " quit sleep");
+        }
     }
 
-    public synchronized void wake() throws InterruptedException {
-        System.out.println(Thread.currentThread().getName() + " wake");
-        Thread.sleep(2000);
-        System.out.println(Thread.currentThread().getName() + " quit wake");
+    public void wake() throws InterruptedException {
+        synchronized (lockByte) {
+            System.out.println(Thread.currentThread().getName() + " wake");
+            Thread.sleep(2000);
+            System.out.println(Thread.currentThread().getName() + " quit wake");
+        }
     }
 
 
     static class  SleepThread implements Runnable {
         @Getter @Setter
-        private SynchronizedObject synchronizedObject;
+        private SynchronizedObject1 synchronizedObject;
         @Override
         public void run() {
             try {
@@ -36,7 +42,7 @@ public class SynchronizedObject {
 
     static class WakeThread implements Runnable {
         @Getter @Setter
-        private SynchronizedObject synchronizedObject;
+        private SynchronizedObject1 synchronizedObject;
         @Override
         public void run() {
             try {
@@ -49,7 +55,7 @@ public class SynchronizedObject {
 
 
     public static void main(String [] args) {
-        SynchronizedObject obj = new SynchronizedObject();
+        SynchronizedObject1 obj = new SynchronizedObject1();
         SleepThread sleepThread = new SleepThread();
         WakeThread wakeThread = new WakeThread();
         sleepThread.setSynchronizedObject(obj);
