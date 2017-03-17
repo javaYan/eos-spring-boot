@@ -2,6 +2,10 @@ package eos.java.practice.string_test;
 
 import org.junit.Test;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 /**
  * Created by yanyuyu on 2017/3/9.
  */
@@ -37,5 +41,61 @@ public class TestString {
         System.out.println(s1 == (s11 + s12)); //false
 
         //在运算中比如字符串相加 如果是声明ji即赋值，则字符串比较结果是true  如果先声明后赋值，则false
+    }
+
+    @Test
+    public void testGBK_UTF8() throws UnsupportedEncodingException {
+        System.out.println("--------------------------\n");
+        String originalStr = "woai我家1314";
+        String utf8Str = new String(originalStr.getBytes("utf-8"), "gbk");
+        System.out.println(utf8Str);
+        String gbkStr = new String(utf8Str.getBytes("gbk"), "utf-8");
+        System.out.println(gbkStr);
+        System.out.println("--------------------------\n");
+
+        System.out.println("--------------------------\n");
+        String originalStr1 = "hello中国人";
+        String utf8Str1 = new String(originalStr1.getBytes("utf-8"), "gbk");
+        System.out.println(utf8Str1);
+        String gbkStr1 = new String(utf8Str1.getBytes("gbk"), "utf-8");
+        System.out.println(gbkStr1);
+        System.out.println("--------------------------\n");
+
+        //woai我家1314可以由UTF8 转为GBK 再转为UTF8  输出没毛病
+        //hello中国人 由UTF8 转为GBK 再转为UTF8  输出会有乱码
+        //说明字符并不是可以由编码任意转换的
+        //GBK转UTF-8时，奇数个中文会乱码，偶数个中文不会乱码。
+    }
+
+    @Test
+    public void testGBKSub() throws UnsupportedEncodingException {
+        System.out.println("--------------------------\n");
+        String str = new String("woai我家1314".getBytes(), StandardCharsets.UTF_8);
+        System.out.println(str);
+        System.out.println(str.substring(0,4));
+        System.out.println(str.substring(0,5));
+        System.out.println(str.substring(0,6));
+        System.out.println("--------------------------\n");
+
+        String str1 = new String("woai我家1314".getBytes(),StandardCharsets.ISO_8859_1);
+        System.out.println(str1);
+        System.out.println(str1.substring(0,4));
+        System.out.println(str1.substring(0,5));
+        System.out.println(str1.substring(0,6));
+        System.out.println("--------------------------\n");
+
+        String str2 = new String("woai我家1314".getBytes(), "GBK");
+        System.out.println(str2);
+        System.out.println(str2.substring(0,4));
+        System.out.println(str2.substring(0,5));
+        System.out.println(str2.substring(0,6));
+        System.out.println("--------------------------\n");
+
+        String str3 = new String("woai我家1314".getBytes(), "GBK");
+        System.out.println(str3);
+        System.out.println(str3.substring(4,5));
+        System.out.println(str3.substring(4,6));
+        System.out.println(str3.substring(4,7));
+        System.out.println("--------------------------\n");
     }
 }
