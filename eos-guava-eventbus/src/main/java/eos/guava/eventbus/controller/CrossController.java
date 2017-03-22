@@ -20,7 +20,7 @@ import java.util.Map;
 public class CrossController {
 
     @RequestMapping(value="cross",method=RequestMethod.GET)
-    public Map<String,Object> doGet(HttpServletResponse response) {  //这种方式只有chrome支持 返回json类型
+    public Map<String,Object> doGet(HttpServletResponse response) {  //这种方式只有chrome支持 返回json类型数据
 
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("result","cross_result"+new Date().getTime());
