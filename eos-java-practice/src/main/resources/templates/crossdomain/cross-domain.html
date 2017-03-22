@@ -27,7 +27,7 @@
         });
     }
 
-    function cross() {
+    function cross() {  //需要看后端服务代码 返回json格式则仅适用于chrome
         $.ajax({
             type: "GET",
             url: "http://localhost:7590/cross",
@@ -39,7 +39,7 @@
         });
     }
 
-    function crossNoSet() {
+    function crossNoSet() {  //需要看后端服务代码 返回jsonp格式则浏览器通用
         $.ajax({
             type: "GET",
             url: "http://localhost:7590/crossWithoutHeader",
