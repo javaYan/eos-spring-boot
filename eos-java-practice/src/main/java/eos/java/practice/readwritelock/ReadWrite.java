@@ -63,7 +63,7 @@ public class ReadWrite {
             @Override
             public void run() {
                 demo.read(readLock);
-                demo.write(readLock,10);
+                demo.write(writeLock,10);
             }
         };
 
