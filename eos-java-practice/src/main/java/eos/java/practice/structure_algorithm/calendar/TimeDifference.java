@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
+ * 求两个时间的天数差
  * Created by yanyuyu on 2017/3/23.
  */
 public class TimeDifference {
