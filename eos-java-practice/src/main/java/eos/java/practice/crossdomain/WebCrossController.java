@@ -14,6 +14,12 @@ import java.util.Map;
 @Controller
 public class WebCrossController {
 
+    /**
+     * json:  {"result":"aaa"}
+     * jsonp:  data({"result":"aaa"})
+     * 注意服务端的返回数据格式
+     * @return
+     */
     @RequestMapping(value="/webCross", method=RequestMethod.GET)
     public String noCrossWeb() {
         return "/crossdomain/cross-domain";
