@@ -4,6 +4,7 @@ import eos.java.practice.entity.Student;
 import eos.java.practice.map.auxiliary.HashMapThread;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -67,5 +68,17 @@ public class HashMapTest {
 
         System.out.println(HashMapThread.map.size());
         //结果可能会大于1000000 说明hashMap的结构可能被破坏了 没有key的唯一性可言
+    }
+
+    @Test
+    public void testCapacity() {
+        Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+        for(int i = 0; i < 20; i ++) {
+            map.put(i,i);
+            if(i==15) {
+                System.out.print("15");
+            }
+        }
+
     }
 }
