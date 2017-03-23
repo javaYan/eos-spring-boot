@@ -1,4 +1,4 @@
-package eos.java.practice.sort;
+package eos.java.practice.structure_algorithm.sort;
 
 /**
  * 基数排序(也可称作桶排序，即按桶号进行排数)

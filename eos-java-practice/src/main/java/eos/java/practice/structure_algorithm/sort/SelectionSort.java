@@ -1,4 +1,4 @@
-package eos.java.practice.sort;
+package eos.java.practice.structure_algorithm.sort;
 
 /**
  * 直接选择排序

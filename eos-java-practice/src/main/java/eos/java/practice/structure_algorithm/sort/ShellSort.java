@@ -1,4 +1,4 @@
-package eos.java.practice.sort;
+package eos.java.practice.structure_algorithm.sort;
 
 /**
  * 希尔排序  实际是分组直接插入排序
