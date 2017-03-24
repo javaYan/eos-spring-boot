@@ -19,6 +19,8 @@ public class ThreadPoolExecutor_ {
     //阻塞队列
     BlockingQueue<Runnable> workQueue;
 
+    //如果ThreadPoolExecutor不再使用 则需要shutdown();
+
     /**
      * Description :
      * <p>

@@ -1,6 +1,7 @@
 package eos.java.practice.threadpool;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -22,10 +23,11 @@ public class SingleThreadExecutor_ {
                 }
             }
         };
-        Executor executor = Executors.newSingleThreadExecutor();//单线程方式执行
+        ExecutorService executor = Executors.newSingleThreadExecutor();//单线程方式执行
         for(int i = 0; i < 10; i ++) {
             executor.execute(runnable);
         }
 
+        executor.shutdown();
     }
 }

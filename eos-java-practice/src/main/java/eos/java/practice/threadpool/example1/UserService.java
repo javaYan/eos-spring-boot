@@ -20,7 +20,7 @@ public class UserService {
 
     public Map<Long,UserVo> batchExecute(List<Long> userIds) {
         long startTime = System.currentTimeMillis();
-        Executor executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+        ExecutorService executor = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
         final ConcurrentHashMap<Long, UserVo> usersMap = new ConcurrentHashMap<Long,UserVo>();
         int size = userIds.size();
         int batches = size/BATCH_USERS_PER_THEAD;
@@ -55,6 +55,8 @@ public class UserService {
             System.out.println("所有线程执行完毕！");
         } catch (InterruptedException e) {
             e.printStackTrace();
+        } finally {
+            executor.shutdown();
         }
         long endTime = System.currentTimeMillis();
         System.out.println("total " + usersMap.keySet().size() +":"+ usersMap.keySet().toString());

@@ -1,6 +1,6 @@
 package eos.java.practice.threadpool;
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -23,11 +23,13 @@ public class CacheThreadPool_ {
             }
         };
 
-        Executor executor = Executors.newCachedThreadPool(); //无界线程池
+        ExecutorService executor = Executors.newCachedThreadPool(); //无界线程池
         // new ThreadPoolExecutor(0, Integer.MAX_VALUE,60L, TimeUnit.SECONDS,new SynchronousQueue<Runnable>())
 
         for(int i = 0; i < 1000; i ++) {
             executor.execute(runnable);
         }
+        executor.shutdown();
+
     }
 }
