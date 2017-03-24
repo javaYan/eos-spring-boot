@@ -81,4 +81,12 @@ public class HashMapTest {
         }
 
     }
+
+    @Test
+    public void testIndexFor() {
+        int length = 16;  //if length = 2^n , then h &(length-1) return h when h < (length-1) else return (length-1)
+        for(int h = 0; h < 130; h ++) {
+            System.out.println(h & (length-1));
+        }
+    }
 }
