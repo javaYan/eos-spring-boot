@@ -56,7 +56,7 @@ public class UserService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            executor.shutdown();
+            executor.shutdown(); //如果不shutdown就会有内存泄漏 线程数飙升
         }
         long endTime = System.currentTimeMillis();
         System.out.println("total " + usersMap.keySet().size() +":"+ usersMap.keySet().toString());
