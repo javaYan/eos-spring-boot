@@ -98,4 +98,22 @@ public class TestString {
         System.out.println(str3.substring(4,7));
         System.out.println("--------------------------\n");
     }
+
+    /**
+     * String的hashCode计算方式：
+     * s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]
+     * 主要是因为31是一个奇质数，所以31*i=32*i-i=(i<<5)-i，这种位移与减法结合的计算相比一般的运算快很多
+     */
+    @Test
+    public void testHashCode() {
+        System.out.println("a".hashCode());
+        System.out.println("b".hashCode());
+        System.out.println("c".hashCode());
+        System.out.println("d".hashCode());
+        System.out.println("e".hashCode());
+        System.out.println("f".hashCode());
+        System.out.println("ab".hashCode());
+        System.out.println(97*31 + 98);
+
+    }
 }
