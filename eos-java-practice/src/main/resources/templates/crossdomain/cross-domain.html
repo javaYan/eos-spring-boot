@@ -8,8 +8,7 @@
     <p id="p_result"></p>
 
     <button type="button" onclick="return no_cross();">非跨域访问</button>
-    <button type="button" onclick="return cross();">跨域访问 response set header</button>
-    <button type="button" onclick="return crossNoSet();">跨域访问 not set header</button>
+    <button type="button" onclick="return cross();">跨域访问 Access-Control-Allow-Origin</button>
 </body>
 
 <!--引入静态文件-->
@@ -27,7 +26,7 @@
         });
     }
 
-    function cross() {  //需要看后端服务代码 返回json格式则仅适用于chrome
+    function cross() {  //需要看后端服务代码 返回json格式
         $.ajax({
             type: "GET",
             url: "http://localhost:7590/cross",
@@ -39,16 +38,5 @@
         });
     }
 
-    function crossNoSet() {  //需要看后端服务代码 返回jsonp格式则浏览器通用
-        $.ajax({
-            type: "GET",
-            url: "http://localhost:7590/crossWithoutHeader",
-            dataType : "jsonp",
-            success: function(msg){
-                alert("成功：" + msg);
-                $("#p_result").text(msg.result);
-            }
-        });
-    }
 </script>
 </html>
