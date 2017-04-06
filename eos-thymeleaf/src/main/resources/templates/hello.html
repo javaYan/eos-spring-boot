@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout">
 <head>
-    <title>Hello World!</title>
+    <title>测试hello</title>
 </head>
 <body>
-<h1 th:inline="text">Hello.v.2</h1>
-<p th:text="${name}"></p>
+<h1><p th:text="${title}"></p></h1>
 </body>
 </html>
