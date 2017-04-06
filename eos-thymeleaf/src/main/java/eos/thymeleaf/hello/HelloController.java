@@ -15,11 +15,11 @@ import java.util.Map;
 @Controller
 @RequestMapping("hello")
 public class HelloController {
-    @RequestMapping(value="gethello" , method=RequestMethod.GET)
-    public ModelAndView gethello(@RequestParam("name") String name) {
-        log.info("gethello params:{}", name);
+    @RequestMapping(value="hello" , method=RequestMethod.GET)
+    public ModelAndView hello(@RequestParam("name") String name) {
+        log.info("hello params:{}", name);
         Map<String,Object> map = new HashMap<String,Object>();
-        map.put("title", "hello:"+name);
+        map.put("name", "hello:"+name);
         return new ModelAndView("hello", map);
     }
 }
