@@ -132,27 +132,6 @@ public abstract class BaseMongoDaoImpl<T> implements BaseMongoDao<T> {
         return this.findAll( query.skip((pageNumber - 1) * pageSize).limit(pageSize));
 	}
 	
-	 /**
-     * @Description 分页查询 
-     * @param page 分页参数
-     * @param query 查询条件
-     * @return
-     */
-    @Override
-    public PageBean findPageForPageBean(PageParam page, Query query) {
-        PageBean pageBean=new PageBean();
-        //获取总数
-        pageBean.setTotalCount(count(query));
-        // 当前页数
-        int pageNumber = page.getPageNum();
-        // 每页记录数
-        int pageSize = page.getNumPerPage();
-        pageBean.setCurrentPage(pageNumber);
-        pageBean.setNumPerPage(pageSize);
-        pageBean.setRecordList(this.findAll( query.skip((pageNumber - 1) * pageSize).limit(pageSize)));
-        return pageBean;
-    }
-	
     /**
      * @Description 创建映射
      */

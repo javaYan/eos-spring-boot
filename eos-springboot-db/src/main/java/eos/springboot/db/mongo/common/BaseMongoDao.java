@@ -79,13 +79,6 @@ public interface BaseMongoDao<T> {
      */
     public List<T> findPage(PageParam page, Query query);
     /**
-     * @Description 分页查询 
-     * @param page 分页参数
-     * @param query 查询条件
-     * @return
-     */
-    public PageBean findPageForPageBean(PageParam page, Query query);
-    /**
      * @Description 创建映射
      */
     public void createCollection();
