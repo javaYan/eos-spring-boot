@@ -20,7 +20,6 @@ public class LoginUtil {
         try {
             user = (User) request.getSession().getAttribute("user");
         } catch (Exception e) {
-            log.error("current user is null!");
         }
         return user;
     }
@@ -34,8 +33,7 @@ public class LoginUtil {
         try {
             return ((User) request.getSession().getAttribute("user")).getId();
         } catch (Exception e) {
-            log.error("current user is null!");
+            return "";
         }
-        return "";
     }
 }

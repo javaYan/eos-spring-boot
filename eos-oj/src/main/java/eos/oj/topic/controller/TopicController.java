@@ -1,9 +1,10 @@
 package eos.oj.topic.controller;
 
 import eos.oj.entity.Topic;
+import eos.oj.exception.BaseException;
+import eos.oj.exception.RestCodeMessage;
 import eos.oj.topic.service.TopicService;
 import eos.oj.util.LoginUtil;
-import eos.oj.vo.CommonResult;
 import eos.oj.vo.TopicVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
@@ -26,24 +27,20 @@ public class TopicController {
     /**
      * 题目详情
      * @param id
+     * @param request
      */
     @RequestMapping(method = RequestMethod.GET)
     public TopicVo get(String id, HttpServletRequest request) {
         String currentUserId = LoginUtil.getCurrentUserId(request);
-        try {
-            return topicService.topicDetail(id, currentUserId);
-        } catch (Exception e) {
-            log.error("TopicController.get error:{},{}", id, currentUserId, e);
-        }
-        return null;
+        return topicService.topicDetail(id, currentUserId);
     }
 
     /**
      * 题目创建
      */
     @RequestMapping(method = RequestMethod.POST)
-    public void post() {
-
+    public TopicVo post(TopicVo vo, HttpServletRequest request) {
+        return topicService.saveTopic(vo, LoginUtil.getCurrentUserId(request));
     }
 
     /**
