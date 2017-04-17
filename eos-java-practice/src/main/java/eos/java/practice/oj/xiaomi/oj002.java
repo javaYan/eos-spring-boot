@@ -1,7 +1,5 @@
 package eos.java.practice.oj.xiaomi;
 
-import java.util.HashSet;
-
 /**
  * Title: oj001
  * Author: yanyuyu
@@ -15,21 +13,32 @@ import java.util.HashSet;
  */
 public class oj002 {
     private static String solution(String line) {
+        line = line.replaceAll(" +"," ");
         String [] strings = line.split(" ");
-        int[] numbers = new int[strings.length];
+        Integer[] numbers = new Integer[strings.length];
         for(int i=strings.length-1; i>=0; i--) {
             numbers[i] = Integer.parseInt(strings[i]);
         }
-
-        HashSet<Integer> set = new HashSet<Integer>();
-
-
-
-
-        return String.valueOf(Integer.parseInt(strings[0]) + Integer.parseInt(strings[1]));
+        boolean single;
+        for(int i=strings.length-1; i>0; i--) {
+            single = true;
+            if(numbers[i] != null) {
+                for(int j=i-1; j >= 0; j--) {
+                    if(numbers[i].equals(numbers[j])) {
+                        numbers[j] = null;
+                        single = false;
+                        break;
+                    }
+                }
+                if(single) {
+                    return numbers[i] + "";
+                }
+            }
+        }
+        return numbers[0] + "";
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("12 13"));
+        System.out.println(solution("10 10 11 12  12  11 16"));
     }
 }
