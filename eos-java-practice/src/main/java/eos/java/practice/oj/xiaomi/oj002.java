@@ -1,7 +1,7 @@
 package eos.java.practice.oj.xiaomi;
 
 /**
- * Title: oj001
+ * Title: 找出单独出现的数字
  * Author: yanyuyu
  * Date: 2017-04-11 18:58
  *  描述
