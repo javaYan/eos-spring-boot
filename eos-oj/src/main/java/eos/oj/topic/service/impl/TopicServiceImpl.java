@@ -4,6 +4,7 @@ import eos.oj.dao.ResultDao;
 import eos.oj.dao.TopicDao;
 import eos.oj.entity.Result;
 import eos.oj.entity.Topic;
+import eos.oj.enums.ResultStatusEnum;
 import eos.oj.enums.TopicEnum;
 import eos.oj.exception.BaseException;
 import eos.oj.exception.RestCodeMessage;
@@ -50,7 +51,7 @@ public class TopicServiceImpl implements TopicService{
                 vo.setResultStatus(TopicEnum.UN_ANSWER_TOPIC.code);
             } else {
                 for(Result result : results) {
-                    if(result.getStatus().equals(TopicEnum.AC_TOPIC.code)) {
+                    if(result.getStatus().equals(ResultStatusEnum.AC.code)) {
                         vo.setResultStatus(TopicEnum.AC_TOPIC.code);
                         break;
                     }
@@ -84,7 +85,7 @@ public class TopicServiceImpl implements TopicService{
         BeanUtils.copyProperties(topic,topicVo);
         topicVo.setResultStatus(TopicEnum.UN_ANSWER_TOPIC.code);
         //TODO findUsernameById()
-        topicVo.setUsername("admin");
+        topicVo.setUsername("yanyuyu");
         return topicVo;
     }
 
