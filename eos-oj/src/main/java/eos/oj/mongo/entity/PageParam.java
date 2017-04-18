@@ -1,4 +1,4 @@
-package eos.springboot.db.mongo.entity;
+package eos.oj.mongo.entity;
 
 import java.io.Serializable;
 
@@ -15,10 +15,10 @@ public class PageParam implements Serializable{
 		super();
 	}
 	
-	public PageParam(int pageNum, int numPerPage) {
+	public PageParam(Integer pageNum, Integer numPerPage) {
 		super();
-		this.pageNum = pageNum;
-		this.numPerPage = numPerPage;
+		this.pageNum = ( pageNum == null || pageNum < 0 ) ? 1 : pageNum;
+		this.numPerPage = ( numPerPage == null || numPerPage < 0 ) ? 10 : numPerPage;
 	}
 
 	public int getPageNum() {
@@ -36,13 +36,4 @@ public class PageParam implements Serializable{
 	public void setNumPerPage(int numPerPage) {
 		this.numPerPage = numPerPage;
 	}
-
-	public int getOffset() {
-		//计算起始位置
-		if(pageNum==0){
-			pageNum =1;
-		}
-		return (pageNum-1)*numPerPage;
-	}
-
 }

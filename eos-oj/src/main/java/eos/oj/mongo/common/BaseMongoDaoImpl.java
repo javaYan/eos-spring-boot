@@ -1,8 +1,8 @@
 package eos.oj.mongo.common;
 
+import eos.oj.mongo.entity.PageParam;
 import eos.oj.util.ReflectUtil;
 import eos.springboot.db.mongo.entity.IncIds;
-import eos.springboot.db.mongo.entity.PageParam;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -175,7 +175,7 @@ public abstract class BaseMongoDaoImpl<T> implements BaseMongoDao<T> {
 	 * @param criteria
 	 * @return
 	 */
-	public int aggregateCount(Criteria criteria) {
+	public long aggregateCount(Criteria criteria) {
 		Aggregation aggregation = Aggregation.newAggregation(
 				Aggregation.match(criteria),
 				Aggregation.group("id").count().as("total"));

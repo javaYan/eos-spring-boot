@@ -42,5 +42,7 @@ public class RestCodeMessage {
 
         public static final String RESOURCE_IS_DELETED = "资源已被删除";
 
+        public static final String UNAUTHORIZED = "未授权";
+
     }
 }

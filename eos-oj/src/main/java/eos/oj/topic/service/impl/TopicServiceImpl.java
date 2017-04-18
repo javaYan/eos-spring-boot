@@ -2,22 +2,24 @@ package eos.oj.topic.service.impl;
 
 import eos.oj.dao.ResultDao;
 import eos.oj.dao.TopicDao;
-import eos.oj.entity.Result;
 import eos.oj.entity.Topic;
-import eos.oj.enums.ResultStatusEnum;
 import eos.oj.enums.TopicEnum;
 import eos.oj.exception.BaseException;
 import eos.oj.exception.RestCodeMessage;
+import eos.oj.mongo.entity.PageParam;
 import eos.oj.topic.service.TopicService;
+import eos.oj.util.StringUtil;
+import eos.oj.vo.PageResult;
 import eos.oj.vo.TopicVo;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,31 +47,13 @@ public class TopicServiceImpl implements TopicService{
         topicDao.checkTopicAvailability(topic);
         TopicVo vo = new TopicVo();
         BeanUtils.copyProperties(topic,vo);
-        if(StringUtils.isNotEmpty(userId)) {
-            List<Result> results = resultDao.findAll(new Query(Criteria.where("topicId").is(id).and("userId").is(userId)));
-            if(CollectionUtils.isEmpty(results)) {
-                vo.setResultStatus(TopicEnum.UN_ANSWER_TOPIC.code);
-            } else {
-                for(Result result : results) {
-                    if(result.getStatus().equals(ResultStatusEnum.AC.code)) {
-                        vo.setResultStatus(TopicEnum.AC_TOPIC.code);
-                        break;
-                    }
-                }
-                if(vo.getResultStatus() == null) {
-                    vo.setResultStatus(TopicEnum.UN_AC_TOPIC.code);
-                }
-            }
-        } else {
-            vo.setResultStatus(TopicEnum.UN_ANSWER_TOPIC.code);
-        }
+        vo.setResultStatus(resultDao.findResultStatusByTopicId(id,userId));
         return vo;
     }
 
     @Override
     public TopicVo saveTopic(TopicVo topicVo, String userId) {
-        if(topicVo == null || StringUtils.isEmpty(topicVo.getTitle()) || StringUtils.isEmpty(topicVo.getDescription())
-                || StringUtils.isEmpty(userId)) {
+        if(topicVo == null || StringUtil.hasEmpty(topicVo.getTitle(),topicVo.getDescription(),userId)) {
             throw new BaseException(RestCodeMessage.Code.BAD_REQUEST, RestCodeMessage.Message.BAD_REQUEST);
         }
         Topic topic = new Topic();
@@ -91,11 +75,81 @@ public class TopicServiceImpl implements TopicService{
 
     @Override
     public void editTopic(TopicVo topicVo, String userId) {
+        if(topicVo == null || StringUtil.hasEmpty(topicVo.getId(),userId)) {
+            throw new BaseException(RestCodeMessage.Code.BAD_REQUEST, RestCodeMessage.Message.BAD_REQUEST);
+        }
+        //校验当前操作用户是否是题目创建者
+        Topic topic = topicDao.findById(topicVo.getId());
+        topicDao.checkTopicAvailability(topic);
+        if(! userId.equals(topic.getUserId())) {
+            throw new BaseException(RestCodeMessage.Code.UNAUTHORIZED, RestCodeMessage.Message.UNAUTHORIZED);
+        }
 
+        Update updateSet = new Update();
+        if(StringUtil.isNotEmpty(topicVo.getDescription())) {
+            updateSet.set("description", topicVo.getDescription());
+        }
+        if(StringUtil.isNotEmpty(topicVo.getExampleInput())) {
+            updateSet.set("exampleInput", topicVo.getExampleInput());
+        }
+        if(StringUtil.isNotEmpty(topicVo.getExampleOutput())) {
+            updateSet.set("exampleOutput", topicVo.getExampleOutput());
+        }
+        if(StringUtil.isNotEmpty(topicVo.getLevel())) {
+            updateSet.set("level", topicVo.getLevel());
+        }
+        if(StringUtil.isNotEmpty(topicVo.getTitle())) {
+            updateSet.set("title", topicVo.getTitle());
+        }
+        topicDao.updateById(topicVo.getId(), updateSet);
     }
 
     @Override
     public void deleteTopic(String id, String userId) {
+        if(StringUtil.hasEmpty(id,userId)) {
+            throw new BaseException(RestCodeMessage.Code.BAD_REQUEST, RestCodeMessage.Message.BAD_REQUEST);
+        }
 
+        Topic topic = topicDao.findById(id);
+        topicDao.checkTopicAvailability(topic);
+        if(! userId.equals(topic.getUserId())) {
+            throw new BaseException(RestCodeMessage.Code.UNAUTHORIZED, RestCodeMessage.Message.UNAUTHORIZED);
+        }
+
+        topicDao.updateById(id, new Update().set("isDelete", true));
+    }
+
+    @Override
+    public PageResult<TopicVo> topics(TopicVo vo, Integer pageNum, Integer pageSize, String userId) {
+        Query query = new Query();
+        Criteria criteria = new Criteria().where("isDelete").is(false);
+        if(vo != null) {
+            if(StringUtil.isNotEmpty(vo.getTitle())) {
+                criteria.and("title").regex(vo.getTitle());
+            }
+            if(StringUtil.isNotEmpty(vo.getUserId())) {
+                criteria.and("userId").is(vo.getUserId());
+            }
+        }
+        PageParam page = new PageParam(pageNum, pageSize);
+        query.addCriteria(criteria);
+        query.with(new Sort(Sort.Direction.DESC,"createTime"));
+        List<Topic> topics = topicDao.findPage(page, query);
+        Long count = topicDao.aggregateCount(criteria);
+        List<TopicVo> topicVoList = new ArrayList<TopicVo>();
+        for(Topic topic : topics) {
+            TopicVo tVo = new TopicVo();
+            BeanUtils.copyProperties(topic, tVo);
+            tVo.setResultStatus(resultDao.findResultStatusByTopicId(topic.getId(),userId));
+
+            topicVoList.add(tVo);
+        }
+
+        PageResult result = new PageResult();
+        result.setPageNum(page.getPageNum());
+        result.setPageSize(page.getNumPerPage());
+        result.setResults(topicVoList);
+        result.setCount(count);
+        return result;
     }
 }

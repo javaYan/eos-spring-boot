@@ -22,6 +22,9 @@ public class Topic implements Serializable{
     private String exampleInput; //样例输入
     private String exampleOutput; //样例输出
     private String userId; //创建者
+    private Long commitCount = 0L; //提交次数
+    private Long acCount = 0L; //通过次数
+    private String level; //等级难度
     private Boolean isDelete;
     private Date createTime;
     private Date updateTime;

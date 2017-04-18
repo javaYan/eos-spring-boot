@@ -1,5 +1,6 @@
 package eos.oj.topic.service;
 
+import eos.oj.vo.PageResult;
 import eos.oj.vo.TopicVo;
 
 /**
@@ -35,4 +36,11 @@ public interface TopicService {
      * @param userId
      */
     public void deleteTopic(String id,String userId);
+
+    /**
+     * 题目列表
+     * @param vo
+     * @param userId
+     */
+    public PageResult<TopicVo> topics(TopicVo vo, Integer pageNum, Integer pageSize, String userId);
 }

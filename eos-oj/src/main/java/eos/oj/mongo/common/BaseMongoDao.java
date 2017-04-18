@@ -1,6 +1,6 @@
 package eos.oj.mongo.common;
 
-import eos.springboot.db.mongo.entity.PageParam;
+import eos.oj.mongo.entity.PageParam;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -100,7 +100,7 @@ public interface BaseMongoDao<T> {
 	 * @param criteria
 	 * @return
 	 */
-	public int aggregateCount(Criteria criteria);
+	public long aggregateCount(Criteria criteria);
 
     /**
      * @Description 查找并且删除--批量
@@ -118,7 +118,7 @@ public interface BaseMongoDao<T> {
     
     /**
      * @Description 根据id更新 
-     * @param query
+     * @param id
      * @param update
      * @return
      */
