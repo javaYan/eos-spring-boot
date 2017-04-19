@@ -1,4 +1,4 @@
-package eos.oj.entity;
+package eos.oj.common.entity;
 
 import lombok.Getter;
 import lombok.Setter;

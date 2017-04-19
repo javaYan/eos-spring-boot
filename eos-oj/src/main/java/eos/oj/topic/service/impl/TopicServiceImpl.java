@@ -1,5 +1,6 @@
 package eos.oj.topic.service.impl;
 
+import eos.oj.common.UserService;
 import eos.oj.dao.ResultDao;
 import eos.oj.dao.TopicDao;
 import eos.oj.entity.Topic;
@@ -36,6 +37,9 @@ public class TopicServiceImpl implements TopicService{
     @Autowired
     private ResultDao resultDao;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * 题目详情
      * @param id
@@ -48,6 +52,7 @@ public class TopicServiceImpl implements TopicService{
         TopicVo vo = new TopicVo();
         BeanUtils.copyProperties(topic,vo);
         vo.setResultStatus(resultDao.findResultStatusByTopicId(id,userId));
+        vo.setUsername(userService.getUsername(topic.getUserId()));
         return vo;
     }
 
@@ -68,8 +73,7 @@ public class TopicServiceImpl implements TopicService{
 
         BeanUtils.copyProperties(topic,topicVo);
         topicVo.setResultStatus(TopicEnum.UN_ANSWER_TOPIC.code);
-        //TODO findUsernameById()
-        topicVo.setUsername("yanyuyu");
+        topicVo.setUsername(userService.getUsername(userId));
         return topicVo;
     }
 
@@ -141,7 +145,7 @@ public class TopicServiceImpl implements TopicService{
             TopicVo tVo = new TopicVo();
             BeanUtils.copyProperties(topic, tVo);
             tVo.setResultStatus(resultDao.findResultStatusByTopicId(topic.getId(),userId));
-
+            tVo.setUsername(userService.getUsername(topic.getUserId()));
             topicVoList.add(tVo);
         }
 
