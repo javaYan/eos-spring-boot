@@ -1,5 +1,6 @@
 package eos.oj.result.controller;
 
+import eos.oj.common.LoginService;
 import eos.oj.result.service.ResultService;
 import eos.oj.vo.ResultVo;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +22,14 @@ public class ResultController {
     @Autowired
     private ResultService resultService;
 
+    @Autowired
+    private LoginService loginService;
+
     /**
      * 提交答案并开启编译运行测试
      */
-    public ResultVo put(ResultVo resultVo, HttpServletRequest request) {
-
-        return resultVo;
+    public ResultVo post(ResultVo resultVo, HttpServletRequest request) {
+        return resultService.commitResult(resultVo, loginService.getCurrentUserId(request));
     }
 
 }
