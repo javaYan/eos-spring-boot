@@ -13,6 +13,7 @@ import java.util.Date;
  */
 @Setter @Getter @ToString
 public class Result implements Serializable{
+    private static final long serialVersionUID = 3082354041812195621L;
     private String id;
     private String topicId;
     private String commitContent;    //提交内容

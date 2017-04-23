@@ -15,6 +15,7 @@ import java.util.Date;
 @Getter
 @ToString
 public class TopicVo implements Serializable{
+    private static final long serialVersionUID = -8999117294868489469L;
     private String id;
     private String title; //标题
     private String description; //描述
