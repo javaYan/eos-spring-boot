@@ -5,12 +5,14 @@ import eos.oj.event.common.EventListener;
 import eos.oj.util.StringUtil;
 import eos.oj.vo.ResultVo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.UUID;
+import java.io.InputStream;
+import java.util.Properties;
 
 /**
  * Created by yanyuyu on 2016/12/30.
@@ -19,14 +21,32 @@ import java.util.UUID;
 @Component
 public class OjListener implements EventListener{
 
-    private static final String COMMIT_JAVA_FILE_PREFIX = "OjTest";
-    private static final String MAIN_JAVA_FILE_PREFIX = "OjMain";
-    private static final String TEMP_PATH = "D:/temp";
+    private static final String OJ_FILE_PREFIX = "Oj";
+    private static final String TEMP_PATH_DEFAULT = "D:/temp";
+    private static final String TEMP_PATH;
 
-    static { // 初始化临时目录文件
-        File tempPath = new File(TEMP_PATH);
-        if(!tempPath.exists()) {
-            tempPath.mkdir();
+    @Autowired
+    private OjEngine ojEngine;
+
+    static { // 初始化临时目录
+        Properties properties = new Properties();
+        InputStream in = null;
+        try {
+            in = OjListener.class.getResourceAsStream("/application.properties");
+            properties.load(in);
+        } catch (IOException e) {
+            log.error("读取配置文件错误", e);
+        } finally {
+            TEMP_PATH = properties.getProperty("temp.file.path", TEMP_PATH_DEFAULT);
+            File tempPath = new File(TEMP_PATH);
+            if(!tempPath.exists()) {
+                tempPath.mkdir();
+            }
+            try {
+                in.close();
+            } catch (IOException e) {
+                log.error("关闭输入流错误", e);
+            }
         }
     }
 
@@ -40,50 +60,15 @@ public class OjListener implements EventListener{
             return ;
         }
 
-        // D:\Temp下的Hello.java中含有main方法
-        // javac D:\Temp\Hello.java  生成Hello.class
-        // java D:\Temp Hello    运行程序
 
         long nanoTime = System.nanoTime();
         String commitContent = data.getCommitContent();
-        String mainContent = "String s = solution(\"1234\");";
-        createCommitJavaFile(nanoTime,commitContent, mainContent);
-    }
-
-    /**
-     * 创建提交的JAVA文件
-     * @param nanoTime
-     * @param commitContent
-     */
-    private void createCommitJavaFile(long nanoTime, String commitContent, String mainContent) {
-        FileOutputStream outputStream = null;
+        String fileName = OJ_FILE_PREFIX + nanoTime;
         try {
-            String fileName = COMMIT_JAVA_FILE_PREFIX + nanoTime;
-            StringBuilder javaBuilder = new StringBuilder("\n")
-                    .append("public class ").append(fileName).append(" {\n")
-                    .append("\tpublic static String solution(String line) {\n")
-                    .append(commitContent).append("\n")
-                    .append("\t}\n")
-                    .append("\tpublic static void main(String []args) {\n")
-                    .append(mainContent).append("\n")
-                    .append("\t}\n")
-                    .append("}");
-
-            File f = new File(TEMP_PATH+"/"+fileName+".java");
-            if(f.exists()) {
-                f.delete();
-            }
-            f.createNewFile();
-            outputStream = new FileOutputStream(f.getPath());
-            outputStream.write(javaBuilder.toString().getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            ojEngine.fire(TEMP_PATH, fileName, id, data.getTopicId(), commitContent);
+        } catch (Exception e) {
+            //忽略异常
         }
     }
+
 }
