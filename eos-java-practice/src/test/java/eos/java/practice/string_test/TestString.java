@@ -1,6 +1,7 @@
 package eos.java.practice.string_test;
 
 import org.junit.Test;
+import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -116,4 +117,22 @@ public class TestString {
         System.out.println(97*31 + 98);
 
     }
+
+    //注意！！！ String.split() 不能将一个字符串作为分隔符  如想要分割abcdeabefeg中的ab为分割 这样实现不了
+    //而org.springframework.util.StringUtils.split 这个可以，但是只能分割第一个出现的，不支持全部分割
+    @Test
+    public void testSplit() {
+        String SPLIT_ADDR = "[-addr-]";
+        StringBuffer addressBuilder = new StringBuffer();
+        String s = "NEW DELHI[-addr-]1912 B, 2nd floor, gali no. 19, Govindpuri Extension, Kalkaji[-addr-] ";
+        String[] subAddress = org.springframework.util.StringUtils.split(s, SPLIT_ADDR);
+        String[] subAddress2 = org.springframework.util.StringUtils.split(subAddress[1], SPLIT_ADDR);
+        addressBuilder.append(subAddress2[0]);
+        if(subAddress2.length > 1 && subAddress2[1].length() > 0) {
+            addressBuilder.append(" ").append(subAddress2[1]);
+        }
+        addressBuilder.append(", ").append(subAddress[0]);
+        System.out.println(addressBuilder.toString());
+    }
+
 }

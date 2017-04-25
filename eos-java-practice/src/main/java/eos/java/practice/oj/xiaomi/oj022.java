@@ -44,11 +44,10 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj022 {
     private static String solution(String line) {
-
         return null;
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("6"));
     }
 }
