@@ -183,6 +183,14 @@ public abstract class BaseMongoDaoImpl<T> implements BaseMongoDao<T> {
 		List<AggregationCount> mappedResults = aggRes.getMappedResults();
 		return mappedResults.size();
 	}
+
+	/**
+	 * 删除
+	 * @param id
+	 */
+	public void deleteById(String id) {
+		mongoTemplate.remove(new Query(Criteria.where("id").is(id)), this.getEntityClass());
+	}
 	
 	private Class<T> getEntityClass(){  
         return ReflectUtil.getSuperClassGenricType(getClass());

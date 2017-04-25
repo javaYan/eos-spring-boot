@@ -123,4 +123,10 @@ public interface BaseMongoDao<T> {
      * @return
      */
     public T updateById(String id, Update update);
+
+	/**
+	 * 删除
+	 * @param id
+     */
+	public void deleteById(String id);
 }

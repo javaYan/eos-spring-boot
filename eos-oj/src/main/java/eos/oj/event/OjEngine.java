@@ -4,24 +4,18 @@ import eos.oj.dao.ResultDao;
 import eos.oj.dao.TopicDataValidationDao;
 import eos.oj.entity.TopicDataValidation;
 import eos.oj.enums.ResultStatusEnum;
-import eos.oj.exception.BaseException;
-import eos.oj.exception.RestCodeMessage;
+import eos.oj.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
+import java.io.*;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Mr_yyy on 2017/4/24.
@@ -38,29 +32,41 @@ public class OjEngine {
     @Autowired
     private ResultDao resultDao;
 
-    public void fire(String absoluteFilePath,String fileName, String resultId, String topicId, String commitContent) {
+    public void fire(String absoluteFileDir,String fileName, String resultId, String topicId, String commitContent) {
+        Update update = null;
         try {
-            this.newOJ(absoluteFilePath,fileName,topicId,commitContent);
-            this.compileOjFile(absoluteFilePath);
+            this.newOJ(absoluteFileDir,fileName,topicId,commitContent);
+            Thread.sleep(3000L);
+            this.compileOjFile(absoluteFileDir + "/" + fileName + ".java");
+            update = new Update();
+            update.set("status", ResultStatusEnum.RUNNING.code).set("updateTime", new Date());
+            resultDao.updateById(resultId, update);
         } catch (Exception e) {
-            Update update = new Update();
             String message = e.getMessage();
             if(message.length() > 10000) {
                 message = message.substring(0, 10000);
             }
-            update.set("status", ResultStatusEnum.COMPILE_FAIL.code).set("executionResult", message);
+            update = new Update();
+            update.set("status", ResultStatusEnum.COMPILE_FAIL.code).set("executionResult", message).set("updateTime", new Date());
             resultDao.updateById(resultId, update);
+            return ;
         }
         try {
-            this.execute(absoluteFilePath);
+            Thread.sleep(3000L);
+            this.execute(absoluteFileDir, fileName);
+
+            update = new Update();
+            update.set("status",ResultStatusEnum.AC.code).set("updateTime", new Date());
+            resultDao.updateById(resultId, update);
         } catch (Exception e) {
-            Update update = new Update();
             String message = e.getMessage();
             if(message.length() > 10000) {
                 message = message.substring(0, 10000);
             }
-            update.set("status", message.startsWith("result is not correct") ? ResultStatusEnum.RUNTIME_EXCEPTION : ResultStatusEnum.RESULT_ERROR).set("executionResult", message);
+            update = new Update();
+            update.set("status", message.contains("result is not correct") ? ResultStatusEnum.RESULT_ERROR.code : ResultStatusEnum.RUNTIME_EXCEPTION.code).set("executionResult", message);
             resultDao.updateById(resultId, update);
+            return ;
         }
 
 
@@ -69,27 +75,23 @@ public class OjEngine {
     /**
      * 根据问题ID和提交的内容，动态加载代码并生成JAVA文件
      */
-    public void newOJ(String absoluteFilePath,String fileName, String topicId, String commitContent) {
-        File ojFile = this.createOjFile(absoluteFilePath, fileName);
+    public void newOJ(String absoluteFileDir,String fileName, String topicId, String commitContent) throws Exception {
+        File ojFile = this.createOjFile(absoluteFileDir, fileName);
         if(ojFile == null) {
-            throw new BaseException(RestCodeMessage.Code.INTERNAL_SERVER_ERROR, "引擎生成临时文件出错，请联系管理员");
+            throw new Exception("引擎生成临时文件出错，请联系管理员");
         }
         List<TopicDataValidation> validations = topicDataValidationDao.findAll(new Query(Criteria.where("topicId").is(topicId)));
         if(CollectionUtils.isEmpty(validations)) {
-            throw new BaseException(RestCodeMessage.Code.INTERNAL_SERVER_ERROR, "缺少测试数据，请联系管理员");
+            throw new Exception("缺少测试数据，请联系管理员");
         }
-        StringBuilder mainBuilder = new StringBuilder("\t\tString result = null;");
+        StringBuilder mainBuilder = new StringBuilder("\t\tString result = null;\n");
         for(TopicDataValidation validation : validations) {
-            // String result = null;
-            // if( !(result = this.solution(validation.getInput())).equals(validation.getOutput()) ) {
-            //      throw new Exception("result is not correct for \""+validation.getInput()+"\", result is \"" +validation.getOutput()+ "\", but yours is \""+result+"\"");
-            // }
-            mainBuilder.append("\t\tif( !(result = this.solution(").append(validation.getInput()).append(")).equals(").append(validation.getOutput()).append(") ) {")
-                       .append("\t\t\tthrow new Exception(\"result is not correct for \"").append(validation.getInput()).append("\",result is \"").append(validation.getOutput()).append("\", but yours is \"result\"")
-                       .append("\t\t}");
+            mainBuilder.append("\t\tif( !(result = solution(\"").append(validation.getInput()).append("\")).equals(\"").append(validation.getOutput()).append("\") ) {\n")
+                       .append("\t\t\tthrow new Exception(\"result is not correct for {").append(validation.getInput()).append("},result is: ").append(validation.getOutput()).append(", but yours is:\" + result);\n")
+                       .append("\t\t}\n");
         }
         StringBuilder codesBuilder = new StringBuilder("\n")
-                .append("import java.util.*;")
+                .append("import java.util.*;\n")
                 .append("public class ").append(fileName).append(" {\n")
                 .append("\tpublic static String solution(String line) {\n")
                 .append(commitContent).append("\n")
@@ -104,7 +106,7 @@ public class OjEngine {
             outputStream.write(codesBuilder.toString().getBytes());
         } catch (Exception e) {
             log.error("系统异常",e);
-            throw new BaseException(RestCodeMessage.Code.INTERNAL_SERVER_ERROR, RestCodeMessage.Message.INTERNAL_SERVER_ERROR);
+            throw new Exception("系统异常！" );
         } finally {
             try {
                 outputStream.close();
@@ -119,22 +121,68 @@ public class OjEngine {
      * 编译OJ文件
      * D:\Temp下的Hello.java中含有main方法
      * javac D:\Temp\Hello.java  生成Hello.class
-     * java D:\Temp Hello        运行程序
+     * java -classpath D:\Temp Hello        运行程序
      * @param absoluteFilePath
      * @return
      */
-    public void compileOjFile(String absoluteFilePath) {
-
+    public void compileOjFile(String absoluteFilePath) throws Exception {
+        BufferedReader reader = null;
+        try {
+            String commandStr = "javac " + absoluteFilePath;
+            Process p = Runtime.getRuntime().exec(commandStr);
+            reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            String line = null;
+            StringBuilder sb = new StringBuilder();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line.trim() + "\n");
+            }
+            if(StringUtil.isNotEmpty(sb.toString())) {
+                throw new Exception(sb.toString());
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
     /**
-     * 执行
+     * 执行并获取结果
      */
-    public void execute(String absoluteFilePath) {
+    public void execute(String absoluteFilePath, String fileName) throws Exception {
+        if(absoluteFilePath.indexOf(".java") > 0) {
+            absoluteFilePath = absoluteFilePath.substring(0,absoluteFilePath.indexOf(".java"));
+        }
+        BufferedReader br = null;
+        Process process = null;
+        try {
+            long startTime = System.currentTimeMillis();
+            String commandStr = "java -classpath " + absoluteFilePath + " " + fileName;
+            process = Runtime.getRuntime().exec(commandStr);
+            br = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String line = null;
+            StringBuilder sb = new StringBuilder();
+            while ((line = br.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            try {
+                process.exitValue();
+            } catch (IllegalThreadStateException e) {
 
+            }
+            if (StringUtil.isNotEmpty(sb.toString())) {
+                throw new Exception(sb.toString());
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
-
-
 
     /**
      * 生成OJ文件

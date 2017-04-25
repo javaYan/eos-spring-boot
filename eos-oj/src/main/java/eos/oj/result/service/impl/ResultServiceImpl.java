@@ -4,6 +4,7 @@ import eos.oj.common.UserService;
 import eos.oj.dao.ResultDao;
 import eos.oj.entity.Result;
 import eos.oj.enums.ResultStatusEnum;
+import eos.oj.event.OjEngine;
 import eos.oj.event.PostResultEvent;
 import eos.oj.event.common.EventDispatcher;
 import eos.oj.exception.BaseException;
@@ -32,6 +33,9 @@ public class ResultServiceImpl implements ResultService {
 
     @Autowired
     private EventDispatcher eventDispatcher;
+
+    @Autowired
+    private OjEngine ojEngine;
 
     @Override
     public ResultVo commitResult(ResultVo resultVo, String userId) {

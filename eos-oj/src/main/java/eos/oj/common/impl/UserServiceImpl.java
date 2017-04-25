@@ -12,7 +12,7 @@ import java.util.Random;
  */
 @Service("userService")
 public class UserServiceImpl implements UserService{
-    public static final String [] usernames = {"张三","李四","王二","小李子","言莫","张小小","蒙牛","赵大头","李丽"};
+    public static final String [] usernames = {"张三","李四","王二","小李子","言莫","张小小","蒙牛","赵大头","李丽","刘大"};
     @Override
     public String getUsername(String id) {
         return usernames[new Random().nextInt(10)];
