@@ -35,7 +35,7 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public ResultVo commitResult(ResultVo resultVo, String userId) {
-        if(resultVo == null || StringUtil.hasEmpty(resultVo.getTopicId(), userId, resultVo.getExecutionResult().trim())) {
+        if(resultVo == null || StringUtil.hasEmpty(resultVo.getTopicId(), resultVo.getCommitContent(),userId)) {
             throw new BaseException(RestCodeMessage.Code.BAD_REQUEST, RestCodeMessage.Message.BAD_REQUEST);
         }
         //保存提交信息

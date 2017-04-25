@@ -6,6 +6,7 @@ import eos.oj.vo.TopicVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +40,7 @@ public class TopicController {
      * 题目创建
      */
     @RequestMapping(method = RequestMethod.POST)
-    public TopicVo post(TopicVo vo, HttpServletRequest request) {
+    public TopicVo post(@RequestBody TopicVo vo, HttpServletRequest request) {
         return topicService.saveTopic(vo, loginService.getCurrentUserId(request));
     }
 
