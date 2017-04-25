@@ -14,8 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Mr_yyy on 2017/4/24.
@@ -36,13 +39,16 @@ public class OjEngine {
         Update update = null;
         try {
             this.newOJ(absoluteFileDir,fileName,topicId,commitContent);
-            Thread.sleep(3000L);
             this.compileOjFile(absoluteFileDir + "/" + fileName + ".java");
             update = new Update();
             update.set("status", ResultStatusEnum.RUNNING.code).set("updateTime", new Date());
             resultDao.updateById(resultId, update);
         } catch (Exception e) {
-            String message = e.getMessage();
+            String message = null;
+            try {
+                message = new String(e.getMessage().getBytes("utf-8"));
+            } catch (UnsupportedEncodingException ue) {
+            }
             if(message.length() > 10000) {
                 message = message.substring(0, 10000);
             }
@@ -52,8 +58,7 @@ public class OjEngine {
             return ;
         }
         try {
-            Thread.sleep(3000L);
-            this.execute(absoluteFileDir, fileName);
+            this.execute(absoluteFileDir, fileName, resultId);
 
             update = new Update();
             update.set("status",ResultStatusEnum.AC.code).set("updateTime", new Date());
@@ -86,7 +91,7 @@ public class OjEngine {
         }
         StringBuilder mainBuilder = new StringBuilder("\t\tString result = null;\n");
         for(TopicDataValidation validation : validations) {
-            mainBuilder.append("\t\tif( !(result = solution(\"").append(validation.getInput()).append("\")).equals(\"").append(validation.getOutput()).append("\") ) {\n")
+            mainBuilder.append("\t\tif( !\"").append(validation.getOutput()).append("\".equals((result = solution(\"").append(validation.getInput()).append("\"))) ) {\n")
                        .append("\t\t\tthrow new Exception(\"result is not correct for {").append(validation.getInput()).append("},result is: ").append(validation.getOutput()).append(", but yours is:\" + result);\n")
                        .append("\t\t}\n");
         }
@@ -130,7 +135,7 @@ public class OjEngine {
         try {
             String commandStr = "javac " + absoluteFilePath;
             Process p = Runtime.getRuntime().exec(commandStr);
-            reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            reader = new BufferedReader(new InputStreamReader(p.getErrorStream(), Charset.forName("UTF8")));
             String line = null;
             StringBuilder sb = new StringBuilder();
             while ((line = reader.readLine()) != null) {
@@ -147,7 +152,7 @@ public class OjEngine {
     /**
      * 执行并获取结果
      */
-    public void execute(String absoluteFilePath, String fileName) throws Exception {
+    public void execute(String absoluteFilePath, String fileName, String resultId) throws Exception {
         if(absoluteFilePath.indexOf(".java") > 0) {
             absoluteFilePath = absoluteFilePath.substring(0,absoluteFilePath.indexOf(".java"));
         }
@@ -157,16 +162,11 @@ public class OjEngine {
             long startTime = System.currentTimeMillis();
             String commandStr = "java -classpath " + absoluteFilePath + " " + fileName;
             process = Runtime.getRuntime().exec(commandStr);
-            br = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            br = new BufferedReader(new InputStreamReader(process.getErrorStream(), Charset.forName("UTF8")));
             String line = null;
             StringBuilder sb = new StringBuilder();
             while ((line = br.readLine()) != null) {
                 sb.append(line + "\n");
-            }
-            try {
-                process.exitValue();
-            } catch (IllegalThreadStateException e) {
-
             }
             if (StringUtil.isNotEmpty(sb.toString())) {
                 throw new Exception(sb.toString());
@@ -202,4 +202,6 @@ public class OjEngine {
         }
         return null;
     }
+
+    http://www.imooc.com/article/16578
 }

@@ -17,7 +17,7 @@ public class PageParam implements Serializable{
 	
 	public PageParam(Integer pageNum, Integer numPerPage) {
 		super();
-		this.pageNum = ( pageNum == null || pageNum < 0 ) ? 1 : pageNum;
+		this.pageNum = ( pageNum == null || pageNum <= 0 ) ? 1 : pageNum;
 		this.numPerPage = ( numPerPage == null || numPerPage < 0 ) ? 10 : numPerPage;
 	}
 
