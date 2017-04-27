@@ -1,27 +1,34 @@
 package eos.oj.event;
 
 import eos.oj.dao.ResultDao;
+import eos.oj.dao.TopicDao;
 import eos.oj.dao.TopicDataValidationDao;
+import eos.oj.entity.Topic;
 import eos.oj.entity.TopicDataValidation;
 import eos.oj.enums.ResultStatusEnum;
-import eos.oj.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
-import java.io.*;
-import java.nio.charset.Charset;
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by Mr_yyy on 2017/4/24.
+ * OJ引擎
  */
 @Slf4j
 @Service
@@ -29,179 +36,171 @@ public class OjEngine {
 
     private static final String JAVA_SUFFIX = ".java";
 
+    private static final String SOLUTION_METHOD = "solution";
+
+    private static final ReentrantLock commitlock = new ReentrantLock();
+
+    private static final ReentrantLock aclock = new ReentrantLock();
+
+    private static final String SOLUTION_CLASS = "import java.lang.*; import java.util.*; public class " ;
+
     @Autowired
     private TopicDataValidationDao topicDataValidationDao;
 
     @Autowired
     private ResultDao resultDao;
 
-    public void fire(String absoluteFileDir,String fileName, String resultId, String topicId, String commitContent) {
-        Update update = null;
+    @Autowired
+    private TopicDao topicDao;
+
+    public void run(File folder,String solutionJavaName, String resultId, String topicId, String commitContent) {
+        //提交次数+1
+        commitlock.lock();
         try {
-            this.newOJ(absoluteFileDir,fileName,topicId,commitContent);
-            this.compileOjFile(absoluteFileDir + "/" + fileName + ".java");
-            update = new Update();
-            update.set("status", ResultStatusEnum.RUNNING.code).set("updateTime", new Date());
-            resultDao.updateById(resultId, update);
+            Topic topic = topicDao.findById(topicId);
+            Update topicUpdate = new Update();
+            topicUpdate.set("commitCount", topic.getCommitCount()+1);
+            topicDao.updateById(topicId,topicUpdate);
         } catch (Exception e) {
-            String message = null;
-            try {
-                message = new String(e.getMessage().getBytes("utf-8"));
-            } catch (UnsupportedEncodingException ue) {
-            }
-            if(message.length() > 10000) {
-                message = message.substring(0, 10000);
-            }
-            update = new Update();
-            update.set("status", ResultStatusEnum.COMPILE_FAIL.code).set("executionResult", message).set("updateTime", new Date());
-            resultDao.updateById(resultId, update);
-            return ;
-        }
-        try {
-            this.execute(absoluteFileDir, fileName, resultId);
-
-            update = new Update();
-            update.set("status",ResultStatusEnum.AC.code).set("updateTime", new Date());
-            resultDao.updateById(resultId, update);
-        } catch (Exception e) {
-            String message = e.getMessage();
-            if(message.length() > 10000) {
-                message = message.substring(0, 10000);
-            }
-            update = new Update();
-            update.set("status", message.contains("result is not correct") ? ResultStatusEnum.RESULT_ERROR.code : ResultStatusEnum.RUNTIME_EXCEPTION.code).set("executionResult", message);
-            resultDao.updateById(resultId, update);
-            return ;
-        }
-
-
-    }
-
-    /**
-     * 根据问题ID和提交的内容，动态加载代码并生成JAVA文件
-     */
-    public void newOJ(String absoluteFileDir,String fileName, String topicId, String commitContent) throws Exception {
-        File ojFile = this.createOjFile(absoluteFileDir, fileName);
-        if(ojFile == null) {
-            throw new Exception("引擎生成临时文件出错，请联系管理员");
-        }
-        List<TopicDataValidation> validations = topicDataValidationDao.findAll(new Query(Criteria.where("topicId").is(topicId)));
-        if(CollectionUtils.isEmpty(validations)) {
-            throw new Exception("缺少测试数据，请联系管理员");
-        }
-        StringBuilder mainBuilder = new StringBuilder("\t\tString result = null;\n");
-        for(TopicDataValidation validation : validations) {
-            mainBuilder.append("\t\tif( !\"").append(validation.getOutput()).append("\".equals((result = solution(\"").append(validation.getInput()).append("\"))) ) {\n")
-                       .append("\t\t\tthrow new Exception(\"result is not correct for {").append(validation.getInput()).append("},result is: ").append(validation.getOutput()).append(", but yours is:\" + result);\n")
-                       .append("\t\t}\n");
-        }
-        StringBuilder codesBuilder = new StringBuilder("\n")
-                .append("import java.util.*;\n")
-                .append("public class ").append(fileName).append(" {\n")
-                .append("\tpublic static String solution(String line) {\n")
-                .append(commitContent).append("\n")
-                .append("\t}\n")
-                .append("\tpublic static void main(String []args) throws Exception {\n")
-                .append(mainBuilder.toString()).append("\n")
-                .append("\t}\n")
-                .append("}");
-        FileOutputStream outputStream = null;
-        try {
-            outputStream = new FileOutputStream(ojFile.getPath());
-            outputStream.write(codesBuilder.toString().getBytes());
-        } catch (Exception e) {
-            log.error("系统异常",e);
-            throw new Exception("系统异常！" );
+            log.error("更新题目提交次数失败，topicId-{}", topicId, e);
         } finally {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                log.error("关闭文件流异常", e);
-            }
+            commitlock.unlock();
         }
 
-    }
-
-    /**
-     * 编译OJ文件
-     * D:\Temp下的Hello.java中含有main方法
-     * javac D:\Temp\Hello.java  生成Hello.class
-     * java -classpath D:\Temp Hello        运行程序
-     * @param absoluteFilePath
-     * @return
-     */
-    public void compileOjFile(String absoluteFilePath) throws Exception {
-        BufferedReader reader = null;
+        Update updateSet = null;
+        File solutionJava = null;
+        boolean resultAc = false;
+        //创建java文件
         try {
-            String commandStr = "javac " + absoluteFilePath;
-            Process p = Runtime.getRuntime().exec(commandStr);
-            reader = new BufferedReader(new InputStreamReader(p.getErrorStream(), Charset.forName("UTF8")));
-            String line = null;
-            StringBuilder sb = new StringBuilder();
-            while ((line = reader.readLine()) != null) {
-                sb.append(line.trim() + "\n");
-            }
-            if(StringUtil.isNotEmpty(sb.toString())) {
-                throw new Exception(sb.toString());
-            }
+            solutionJava = this.createSolutionJava(folder, solutionJavaName, commitContent);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
+            updateSet = new Update();
+            updateSet.set("status", ResultStatusEnum.COMPILE_FAIL.code)
+                     .set("executionResult", e.getMessage())
+                     .set("updateTime", new Date());
+            resultDao.updateById(resultId, updateSet);
 
-    /**
-     * 执行并获取结果
-     */
-    public void execute(String absoluteFilePath, String fileName, String resultId) throws Exception {
-        if(absoluteFilePath.indexOf(".java") > 0) {
-            absoluteFilePath = absoluteFilePath.substring(0,absoluteFilePath.indexOf(".java"));
+            this.release(solutionJava);
+            return;
         }
-        BufferedReader br = null;
-        Process process = null;
+        //编译文件
         try {
-            long startTime = System.currentTimeMillis();
-            String commandStr = "java -classpath " + absoluteFilePath + " " + fileName;
-            process = Runtime.getRuntime().exec(commandStr);
-            br = new BufferedReader(new InputStreamReader(process.getErrorStream(), Charset.forName("UTF8")));
-            String line = null;
-            StringBuilder sb = new StringBuilder();
-            while ((line = br.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            if (StringUtil.isNotEmpty(sb.toString())) {
-                throw new Exception(sb.toString());
-            }
+            this.compileSolutionJava(solutionJava);
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        } finally {
-            if (br != null) {
+            updateSet = new Update();
+            updateSet.set("status", ResultStatusEnum.COMPILE_FAIL.code)
+                    .set("executionResult", e.getMessage())
+                    .set("updateTime", new Date());
+            resultDao.updateById(resultId, updateSet);
+
+            this.release(solutionJava);
+            return;
+        }
+        //执行并验证结果
+        try {
+            String result = this.executeDataValidation(folder, solutionJavaName, topicId);
+            updateSet = new Update();
+            if(result != null) {
+                updateSet.set("status", ResultStatusEnum.RESULT_ERROR.code)
+                        .set("executionResult", result)
+                        .set("updateTime", new Date());
+            } else {
+                updateSet.set("status", ResultStatusEnum.AC.code)
+                        .set("executionResult", "运行通过")
+                        .set("updateTime", new Date());
+                resultAc = true;
+            }
+            resultDao.updateById(resultId, updateSet);
+
+            //更新问题通过次数
+            if(resultAc) {
+                aclock.lock();
                 try {
-                    br.close();
+                    Topic topic = topicDao.findById(topicId);
+                    Update topicUpdate = new Update();
+                    topicUpdate.set("acCount", topic.getAcCount()+1);
+                    topicDao.updateById(topicId,topicUpdate);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("更新题目通过次数失败，topicId-{}", topicId, e);
+                } finally {
+                    aclock.unlock();
                 }
             }
+        } catch (Exception e) {
+            updateSet = new Update();
+            updateSet.set("status", ResultStatusEnum.RUNTIME_EXCEPTION.code)
+                    .set("executionResult", e.getMessage())
+                    .set("updateTime", new Date());
+            resultDao.updateById(resultId, updateSet);
+        }
+
+        this.release(solutionJava);
+    }
+
+    /**
+     * 根据提交的内容，生成待编译的JAVA文件
+     */
+    private File createSolutionJava(File folder, String solutionJavaName,String commitContent) throws Exception {
+        File solutionJava = new File(folder, solutionJavaName+JAVA_SUFFIX);
+        try {
+            Files.write(solutionJava.toPath(), (SOLUTION_CLASS + solutionJavaName + "{"+ commitContent + "}").getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            throw new Exception("写入待编译文件失败，请联系管理员");
+        }
+        return solutionJava;
+    }
+
+    /**
+     * 编译文件
+     */
+    private void compileSolutionJava(File solutionJava) throws Exception{
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        if (compiler == null) {
+            throw new Exception("系统繁忙，请联系管理员");
+        }
+
+        int compilationResult = compiler.run(null, null, null,"-nowarn", solutionJava.getPath());
+        if (compilationResult != 0) {
+            throw new Exception("编译失败");
         }
     }
 
     /**
-     * 生成OJ文件
-     * @param dirPath
-     * @param fileName
+     * 执行数据验证
+     * @return 抛异常或者非null输出均视为失败
      */
-    private File createOjFile(String dirPath,String fileName) {
+    private String executeDataValidation(File folder, String solutionJavaName, String topicId) throws Exception{
         try {
-            File f = new File(dirPath+"/"+fileName+JAVA_SUFFIX);
-            if(f.exists()) {
-                f.delete();
+            URLClassLoader classLoader = URLClassLoader.newInstance(new URL[] {folder.toURI().toURL()});
+            Class  cls = Class.forName(solutionJavaName, true, classLoader);
+            Object instance = cls.newInstance();
+            Method method = cls.getDeclaredMethod(SOLUTION_METHOD, String.class);
+
+            List<TopicDataValidation> validations = topicDataValidationDao.findAll(new Query(Criteria.where("topicId").is(topicId)));
+            if(validations == null || validations.size() == 0) {
+                throw new Exception("无法获取验证数据，请联系管理员");
             }
-            f.createNewFile();
-            return f;
-        } catch (IOException e) {
-            e.printStackTrace();
+            String result = null;
+            for(TopicDataValidation validation : validations) {
+                result = (String) method.invoke(instance, validation.getInput());
+                if(!validation.getOutput().equals(result)) {
+                    StringBuilder resultBuilder = new StringBuilder();
+                    resultBuilder.append("结果不匹配！")
+                            .append("输入：").append(validation.getInput())
+                            .append("，正确输出：").append(validation.getOutput())
+                            .append("，运行输出：").append(result);
+                    return resultBuilder.toString();
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            throw e;
         }
-        return null;
     }
 
-
+    private void release(File solutionJava) {
+        if(solutionJava.exists()) {
+            solutionJava.delete();
+        }
+    }
 }

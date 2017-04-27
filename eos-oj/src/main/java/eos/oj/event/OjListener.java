@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -21,10 +20,10 @@ import java.util.Properties;
 @Component
 public class OjListener implements EventListener{
 
-    private static final String OJ_FILE_PREFIX = "Oj";
+    private static final String SOLUTION_FILE_PREFIX = "Solution";
     private static final String TEMP_PATH_DEFAULT = "D:/temp";
     private static final String TEMP_PATH;
-
+    private static final File folder;
     @Autowired
     private OjEngine ojEngine;
 
@@ -38,9 +37,9 @@ public class OjListener implements EventListener{
             log.error("读取配置文件错误", e);
         } finally {
             TEMP_PATH = properties.getProperty("temp.file.path", TEMP_PATH_DEFAULT);
-            File tempPath = new File(TEMP_PATH);
-            if(!tempPath.exists()) {
-                tempPath.mkdir();
+            folder = new File(TEMP_PATH);
+            if(!folder.exists()) {
+                folder.mkdir();
             }
             try {
                 in.close();
@@ -60,12 +59,10 @@ public class OjListener implements EventListener{
             return ;
         }
 
-
-        long nanoTime = System.nanoTime();
         String commitContent = data.getCommitContent();
-        String fileName = OJ_FILE_PREFIX + nanoTime;
+        String solutionJavaName = SOLUTION_FILE_PREFIX + System.nanoTime();
         try {
-            ojEngine.fire(TEMP_PATH, fileName, id, data.getTopicId(), commitContent);
+            ojEngine.run(folder, solutionJavaName, data.getId(), data.getTopicId(), commitContent);
         } catch (Exception e) {
             //忽略异常
         }

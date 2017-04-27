@@ -48,13 +48,13 @@ public class ResultServiceImpl implements ResultService {
         result.setId(null);
         Date currentDate = new Date();
         result.setCreateTime(currentDate);
-        result.setStatus(ResultStatusEnum.COMPILING.code);
+        result.setStatus(ResultStatusEnum.WAITING.code);
         result.setUserId(userId);
         resultDao.save(result);
 
         //发布事件 触发OJ引擎的执行
         resultVo.setId(result.getId());
-        resultVo.setStatus(ResultStatusEnum.COMPILING.code);
+        resultVo.setStatus(ResultStatusEnum.WAITING.code);
         resultVo.setUsername(userService.getUsername(userId));
         resultVo.setCreateTime(currentDate);
         PostResultEvent event = new PostResultEvent(result.getId());
