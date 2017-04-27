@@ -5,7 +5,7 @@ package eos.oj.enums;
  * 回答结果状态枚举类
  */
 public enum ResultStatusEnum {
-    WAITING          (-1),//-1:等待中
+    WAITING         (-1), //-1:等待中
     AC               (0), // 0:已通过
     COMPILE_FAIL     (1), // 1:编译失败
     RUNTIME_EXCEPTION(2), // 2:运行时异常
