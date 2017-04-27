@@ -36,6 +36,8 @@ public class OjEngine {
 
     private static final String JAVA_SUFFIX = ".java";
 
+    private static final String CLASS_SUFFIX = ".class";
+
     private static final String SOLUTION_METHOD = "solution";
 
     private static final ReentrantLock commitlock = new ReentrantLock();
@@ -199,8 +201,17 @@ public class OjEngine {
     }
 
     private void release(File solutionJava) {
+        int index = solutionJava.getPath().indexOf(".java");
+        if( index > 0) {
+            String solutionClassPath = solutionJava.getPath().substring(0, index) + CLASS_SUFFIX;
+            File solutionClass = new File(solutionClassPath);
+            if(solutionClass.exists()) {
+                solutionClass.delete();
+            }
+        }
         if(solutionJava.exists()) {
             solutionJava.delete();
         }
+
     }
 }
