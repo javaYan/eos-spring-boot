@@ -87,6 +87,7 @@ public class OjEngine {
         }
         //编译文件
         try {
+            Thread.sleep(1000L);
             this.compileSolutionJava(solutionJava);
         } catch (Exception e) {
             updateSet = new Update();
@@ -100,6 +101,7 @@ public class OjEngine {
         }
         //执行并验证结果
         try {
+            Thread.sleep(2000L);
             String result = this.executeDataValidation(folder, solutionJavaName, topicId);
             updateSet = new Update();
             if(result != null) {
