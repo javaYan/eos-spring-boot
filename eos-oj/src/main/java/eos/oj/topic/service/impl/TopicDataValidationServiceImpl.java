@@ -54,7 +54,7 @@ public class TopicDataValidationServiceImpl implements TopicDataValidationServic
 
     @Override
     public TopicDataValidation saveTopicDataValidation(TopicDataValidation vo, String userId) {
-        if(StringUtil.hasEmpty(vo.getInput(), vo.getOutput(), vo.getTopicId())) {
+        if(StringUtil.hasEmpty(vo.getInput(), vo.getOutput(), vo.getTopicId(), userId)) {
             throw new BaseException(RestCodeMessage.Code.BAD_REQUEST, RestCodeMessage.Message.BAD_REQUEST);
         }
         Topic topic = topicDao.findById(vo.getTopicId());
@@ -67,6 +67,9 @@ public class TopicDataValidationServiceImpl implements TopicDataValidationServic
 
     @Override
     public void deleteTopicDataValidation(String id, String userId) {
+        if(StringUtil.hasEmpty(id, userId)) {
+            throw new BaseException(RestCodeMessage.Code.BAD_REQUEST, RestCodeMessage.Message.BAD_REQUEST);
+        }
         topicDataValidationDao.deleteById(id);
     }
 }

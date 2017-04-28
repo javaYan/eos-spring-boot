@@ -102,7 +102,9 @@ public class OjEngine {
         //执行并验证结果
         try {
             Thread.sleep(2000L);
+            long startTime = System.currentTimeMillis();
             String result = this.executeDataValidation(folder, solutionJavaName, topicId);
+            long endTime = System.currentTimeMillis();
             updateSet = new Update();
             if(result != null) {
                 updateSet.set("status", ResultStatusEnum.RESULT_ERROR.code)
@@ -111,6 +113,7 @@ public class OjEngine {
             } else {
                 updateSet.set("status", ResultStatusEnum.AC.code)
                         .set("executionResult", "运行通过")
+                        .set("costTime", (endTime-startTime))
                         .set("updateTime", new Date());
                 resultAc = true;
             }

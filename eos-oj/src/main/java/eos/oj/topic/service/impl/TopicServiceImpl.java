@@ -47,6 +47,9 @@ public class TopicServiceImpl implements TopicService{
      * @return
      */
     public TopicVo topicDetail(String id, String userId) {
+        if(StringUtil.hasEmpty(id)) {
+            throw new BaseException(RestCodeMessage.Code.BAD_REQUEST, RestCodeMessage.Message.BAD_REQUEST);
+        }
         Topic topic = topicDao.findById(id);
         topicDao.checkTopicAvailability(topic);
         TopicVo vo = new TopicVo();

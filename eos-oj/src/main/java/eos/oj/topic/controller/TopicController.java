@@ -48,15 +48,15 @@ public class TopicController {
      * 题目删除
      */
     @RequestMapping(method = RequestMethod.DELETE)
-    public void delete() {
-
+    public void delete(String id, HttpServletRequest request) {
+        topicService.deleteTopic(id, loginService.getCurrentUserId(request));
     }
 
     /**
      * 题目修改
      */
     @RequestMapping(method = RequestMethod.PUT)
-    public void put() {
-
+    public void put(@RequestBody TopicVo vo, HttpServletRequest request) {
+        topicService.editTopic(vo, loginService.getCurrentUserId(request));
     }
 }

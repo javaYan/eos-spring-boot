@@ -2,6 +2,7 @@ package eos.oj.result.controller;
 
 import eos.oj.common.LoginService;
 import eos.oj.result.service.ResultService;
+import eos.oj.vo.PageResult;
 import eos.oj.vo.ResultVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,4 +36,14 @@ public class ResultController {
         return resultService.commitResult(resultVo, loginService.getCurrentUserId(request));
     }
 
+    /**
+     * 得到执行结果
+     * @param id
+     * @param request
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET)
+    public ResultVo post(String id, HttpServletRequest request) {
+        return resultService.detail(id, loginService.getCurrentUserId(request));
+    }
 }
