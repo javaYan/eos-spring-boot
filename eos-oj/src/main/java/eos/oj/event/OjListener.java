@@ -1,5 +1,6 @@
 package eos.oj.event;
 
+import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import eos.oj.event.common.EventListener;
 import eos.oj.util.StringUtil;
@@ -50,7 +51,9 @@ public class OjListener implements EventListener{
     }
 
     @Subscribe
+    @AllowConcurrentEvents
     public void onPostResultEvent(PostResultEvent event) {
+        System.out.println("run haha" + Thread.currentThread().getName());
         String id = event.getId();
         ResultVo data = event.getData();
         log.info("listener receive PostResultEvent : id-[{}], data-[{}]", id, data);
