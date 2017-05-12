@@ -31,11 +31,21 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj011 {
     private static String solution(String line) {
-
-        return null;
+        String [] strs = line.split(" ");
+        String shortstr = strs[0];
+        String longstr  = strs[1];
+        for(int i =0; i < shortstr.length(); i ++) {
+            int index = longstr.indexOf(shortstr.charAt(i));
+            if(index >= 0) {
+                longstr = longstr.substring(0,index) + longstr.substring(index+1, longstr.length());
+            } else {
+                return "false";
+            }
+        }
+        return "true";
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("aa ab"));
     }
 }

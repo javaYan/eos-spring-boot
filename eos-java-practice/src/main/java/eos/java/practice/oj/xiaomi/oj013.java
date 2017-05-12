@@ -20,11 +20,44 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj013 {
     private static String solution(String line) {
+        class MyNumber {
+            public int number;
+            public int count;
+        }
+        String[] lines = line.split(" ");
+        String str1 = lines[0];
+        String[] strings = str1.split(",");
+        int length = strings.length;
+        int K = Integer.parseInt(lines[1]);
+        int [] numbers = new int [length];
+        MyNumber [] tempNumbers = new MyNumber[length];
+        for(int i = 0; i < length; i ++) {
+            numbers[i] = Integer.parseInt(strings[i]);
+            tempNumbers[i] = 0;
+        }
 
+        java.util.Arrays.sort(numbers);
+
+        for(int i = 0; i < length; ) {
+            int currentIndex = i;
+            tempNumbers[i] = 1;
+            while((++i < length) && numbers[currentIndex] == numbers[i]) {
+                tempNumbers[currentIndex] ++;
+            }
+        }
+
+        for(int i = 0; i < length; i ++) {
+            if(tempNumbers[i] != 0)
+                System.out.println(numbers[i] + "出现过" + tempNumbers[i] + "次");
+        }
+
+        if(K == length) {
+
+        }
         return null;
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("1,1,1,2,2,3 2"));
     }
 }
