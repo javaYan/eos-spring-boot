@@ -34,11 +34,18 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj005 {
     private static String solution(String line) {
-
-        return null;
+        //先排序 再求中间值 TODO排序可以优化 因为其实是两个有序数列的组合数列
+        String[] strs = line.split(",");
+        int length = strs.length;
+        int[] numbers = new int[length];
+        for(int i = 0; i < length; i ++) {
+            numbers[i] = Integer.parseInt(strs[i]);
+        }
+        java.util.Arrays.sort(numbers);
+        return String.valueOf(numbers[length/2]);
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("12,13,14,5,6,7,8,9,10"));
     }
 }

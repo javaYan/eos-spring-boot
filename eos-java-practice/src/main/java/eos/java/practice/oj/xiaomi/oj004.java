@@ -36,11 +36,30 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj004 {
     private static String solution(String line) {
-
-        return null;
+        //题目求什么：求一组数列中 有没有多个连续的数字，此处的连续不是指递增或递减
+        //题目核心：排序 按照大小排序 即可见答案
+        //题目要求：o(n) 则要求排序算法o(n)
+        String[] numbers = line.split(",");
+        int length = numbers.length;
+        int [] intArray = new int[length];
+        for(int i = 0; i < length; i ++) {
+            intArray[i] = Integer.parseInt(numbers[i]);
+        }
+        java.util.Arrays.sort(intArray);
+        int maxCount = 1;
+        int tempCount = 1;
+        for(int i = 0; i < length-1; i ++) {
+            if(intArray[i+1] == intArray[i]+1) {
+                tempCount ++;
+            } else {
+                maxCount = tempCount > maxCount ? tempCount : maxCount;
+            }
+        }
+        maxCount = tempCount > maxCount ? tempCount : maxCount;
+        return String.valueOf(maxCount);
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("1,2,3,4,5,6"));
     }
 }

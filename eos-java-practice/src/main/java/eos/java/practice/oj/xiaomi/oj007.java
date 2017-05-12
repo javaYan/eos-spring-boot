@@ -38,11 +38,36 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj007 {
     private static String solution(String line) {
-
-        return null;
+        String[] strs = line.split(",");
+        int length = strs.length;
+        int [] numbers = new int[length];
+        for(int i = 0; i < length; i ++) {
+            numbers[i] = Integer.parseInt(strs[i]);
+        }
+        java.util.Arrays.sort(numbers);
+        if(numbers[0] > 0 && numbers[0] != 1)  {
+            return "1";
+        }
+        for(int i = 1; i < length; i ++) {
+            if(numbers[i] > 0) {
+                if(numbers[i-1]<=0) {
+                    if(numbers[i] != 1) {
+                        return "1";
+                    }
+                    continue;
+                } else {
+                    if(numbers[i-1] != numbers[i]-1) {
+                        return String.valueOf(numbers[i-1]+1);
+                    }
+                    continue;
+                }
+            }
+        }
+        int result = numbers[length-1]+1 != 0 ? numbers[length-1]+1 : 1;
+        return String.valueOf(result);
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("-1,-3,-5"));
     }
 }
