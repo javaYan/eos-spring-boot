@@ -13,6 +13,10 @@
     <artifactId>eos-java-practice</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <commons-lang.version>2.6</commons-lang.version>
+    </properties>
+
     <dependencies>
         <!-- spring boot web -->
         <dependency>
@@ -46,6 +50,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- commons-lang -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>${commons-lang.version}</version>
         </dependency>
     </dependencies>
 
