@@ -29,7 +29,7 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj009 {
     private static String solution(String line) {
-        //总位数n  移除位数k  剩余位数n-k
+
         int length = line.length();
 
         return null;

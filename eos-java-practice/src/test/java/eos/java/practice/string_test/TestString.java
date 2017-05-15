@@ -1,5 +1,6 @@
 package eos.java.practice.string_test;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.junit.Test;
 import org.springframework.util.StringUtils;
 
@@ -133,6 +134,30 @@ public class TestString {
         }
         addressBuilder.append(", ").append(subAddress[0]);
         System.out.println(addressBuilder.toString());
+    }
+
+
+    /**
+     * 测试字符串按字节截取 保证截取之后的字符串不会非法（汉字不会被截断）
+     * @throws UnsupportedEncodingException
+     */
+    @Test
+    public void testAscii1() throws UnsupportedEncodingException {
+        //String bytesString = new String("第20个字节是可以截取的");
+        String bytesString = new String("第020个字节是不可以截取的");
+        byte[] bytes = bytesString.getBytes("GB18030");
+        //现在要截数组：截取索引是20
+        int cutIndex = 20;
+        byte[] subarray = null;
+        String temp = null;
+        for(int i = 0; i < 4; i ++) {
+            subarray = ArrayUtils.subarray(bytes, 0, cutIndex - i);
+            temp = new String(subarray, "GB18030");
+            if((int) temp.charAt(temp.length() - 1) != 65533) {
+                System.out.println("找到截取的索引:" + (cutIndex - i));
+                break;
+            }
+        }
     }
 
 }

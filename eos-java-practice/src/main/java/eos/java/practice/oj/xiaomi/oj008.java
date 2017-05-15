@@ -21,11 +21,37 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj008 {
     private static String solution(String line) {
+        //每次找最大的数 移动到末位
+        String[] strs = line.split(",");
+        int length = strs.length;
+        int [] numbers = new int[length];
+        int [] sortedNumbers = new int[length];
+        for(int i = 0; i < length; i++) {
+            numbers[i] = sortedNumbers[i] = Integer.parseInt(strs[i]);
+        }
 
-        return null;
+        java.util.Arrays.sort(sortedNumbers);
+
+        int totalSwapCount = 0;
+        int temp;
+        for(int sortedIndex = length-1; sortedIndex >= 0; sortedIndex --) {
+            for(int index = 0; index < length; index ++) {
+                if(sortedNumbers[sortedIndex] == numbers[index]) { //找到最大的数在原数组中的位置
+                    for(int startIndex = index; startIndex < sortedIndex; startIndex ++) {
+                        temp = numbers[startIndex+1];
+                        numbers[startIndex+1] = numbers[startIndex];
+                        numbers[startIndex] = temp;
+                        totalSwapCount ++;
+                    }
+                    break;
+                }
+            }
+        }
+
+        return String.valueOf(totalSwapCount);
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("64,7,2,3,1"));
     }
 }
