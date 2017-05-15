@@ -41,6 +41,7 @@ public class oj019 {
         } else if((flagIndex = line.indexOf("<")) != -1) {
             flag = "<";
         } else {
+            flagIndex = line.indexOf("+");
             flag = "+";
         }
         str1 = line.substring(0,flagIndex);
@@ -87,27 +88,62 @@ public class oj019 {
             if(length1 >= length2) {
                 int diff = length1 - length2;
                 for(int i = length2-1; i >= 0; i --) {
-                    int result = chars1[i+diff] + chars2[i] - 96;
+                    int result = chars1[i+diff] + chars2[i] - 96 + leftValue;
+                    leftValue = 0; //初始化进位值
                     if(result > 9) {
-                        //TODO
+                        buffer.append(result%10);
+                        leftValue ++;
+                    } else {
+                        buffer.append(result);
+                    }
+                }
+                for(int i = diff-1; i >= 0; i --) {
+                    if(leftValue > 0) {
+                        int result = chars1[i] - 48 + leftValue;
+                        leftValue = 0;
+                        if(result > 9) {
+                            buffer.append(result%10);
+                            leftValue ++;
+                        } else {
+                            buffer.append(result);
+                        }
+                    } else {
+                        buffer.append(chars1[i] - 48);
                     }
                 }
             } else {
-
+                int diff = length2 - length1;
+                for(int i = length1-1; i >= 0; i --) {
+                    int result = chars2[i+diff] + chars1[i] - 96 + leftValue;
+                    leftValue = 0; //初始化进位值
+                    if(result > 9) {
+                        buffer.append(result%10);
+                        leftValue ++;
+                    } else {
+                        buffer.append(result);
+                    }
+                }
+                for(int i = diff-1; i >= 0; i --) {
+                    if(leftValue > 0) {
+                        int result = chars2[i] - 48 + leftValue;
+                        leftValue = 0;
+                        if(result > 9) {
+                            buffer.append(result%10);
+                            leftValue ++;
+                        } else {
+                            buffer.append(result);
+                        }
+                    } else {
+                        buffer.append(chars2[i] - 48);
+                    }
+                }
             }
+            return buffer.reverse().toString();
         }
-
-
-        return null;
     }
 
     public static void main(String[] args) {
-//        System.out.println(solution("972919822976663297>74058"));
-
-        char a = '0';
-        char b = '2';
-        int c = a + b - 48*2;
-        System.out.println(c);
+        System.out.println(solution("12312312369+12312312369"));
     }
 
 }
