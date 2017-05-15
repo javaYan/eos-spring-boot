@@ -111,6 +111,9 @@ public class oj019 {
                         buffer.append(chars1[i] - 48);
                     }
                 }
+                if(leftValue > 0) {
+                    buffer.append("1");
+                }
             } else {
                 int diff = length2 - length1;
                 for(int i = length1-1; i >= 0; i --) {
@@ -137,13 +140,16 @@ public class oj019 {
                         buffer.append(chars2[i] - 48);
                     }
                 }
+                if(leftValue > 0) {
+                    buffer.append("1");
+                }
             }
             return buffer.reverse().toString();
         }
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("12312312369+12312312369"));
+        System.out.println(solution("91605925589308617120639+44791376625729389745455"));
     }
 
 }
