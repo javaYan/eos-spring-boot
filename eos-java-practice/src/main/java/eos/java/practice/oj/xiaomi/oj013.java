@@ -20,44 +20,60 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj013 {
     private static String solution(String line) {
+        //先按number大小进行排序
+        //计算出number对应的count数
         class MyNumber {
-            public int number;
-            public int count;
+            public int number; //存储的数
+            public int count;  //出现的次数
+            public MyNumber(int number, int count) {
+                this.number = number;
+                this.count = count;
+            }
         }
         String[] lines = line.split(" ");
         String str1 = lines[0];
         String[] strings = str1.split(",");
         int length = strings.length;
         int K = Integer.parseInt(lines[1]);
-        int [] numbers = new int [length];
-        MyNumber [] tempNumbers = new MyNumber[length];
+        MyNumber [] myNumbers = new MyNumber[length];
         for(int i = 0; i < length; i ++) {
-            numbers[i] = Integer.parseInt(strings[i]);
-            tempNumbers[i] = 0;
+            MyNumber myNumber = new MyNumber(Integer.parseInt(strings[i]), 1);
+            myNumbers[i] = myNumber;
         }
 
-        java.util.Arrays.sort(numbers);
+        java.util.Collections.sort(java.util.Arrays.asList(myNumbers), new java.util.Comparator<MyNumber>() {
+            @Override
+            public int compare(MyNumber o1, MyNumber o2) {
+                if(o1.number > o2.number) {
+                    return 1;
+                } else if(o1.number == o2.number){
+                    return 0;
+                } else {
+                    return -1;
+                }
+            }
+        });
 
         for(int i = 0; i < length; ) {
             int currentIndex = i;
-            tempNumbers[i] = 1;
-            while((++i < length) && numbers[currentIndex] == numbers[i]) {
-                tempNumbers[currentIndex] ++;
+            while((++i < length) && myNumbers[currentIndex].number == myNumbers[i].number) {
+                myNumbers[currentIndex].count++;
+                myNumbers[i] = null;
             }
         }
 
-        for(int i = 0; i < length; i ++) {
-            if(tempNumbers[i] != 0)
-                System.out.println(numbers[i] + "出现过" + tempNumbers[i] + "次");
+        StringBuffer sb = new StringBuffer();
+        for(int i = 0; i < length && K > 0; i++) {
+            if( myNumbers[i]!= null) {
+                sb.append(myNumbers[i].number).append(",");
+                K --;
+            }
         }
-
-        if(K == length) {
-
-        }
-        return null;
+        String result = sb.toString();
+        return result.substring(0,result.length()-1);
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("1,1,1,2,2,3 2"));
+        System.out.println(solution("1 1"));
     }
 }
