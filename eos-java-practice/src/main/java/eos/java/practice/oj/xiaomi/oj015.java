@@ -1,5 +1,7 @@
 package eos.java.practice.oj.xiaomi;
 
+import java.util.HashSet;
+
 /**
  合为零的三元组
  描述
@@ -21,11 +23,32 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj015 {
     private static String solution(String line) {
+        String[] strs = line.split(",");
+        int length = strs.length;
+        int[] numbers = new int[length];
+        for(int i =0; i < length; i ++) {
+            numbers[i] = Integer.parseInt(strs[i]);
+        }
 
-        return null;
+        //开始查数
+        HashSet<String> set = new HashSet<String>();//符合条件的存放
+        for(int i = 0; i < length; i ++) {
+            for(int j = i+1; j < length; j ++) {
+                for(int k = j+1; k < length; k ++) {
+                    if(numbers[i]+numbers[j]+numbers[k] == 0) {
+                        int max, middle, min;
+                        max = Math.max(Math.max(numbers[i], numbers[j]), numbers[k]);
+                        min = Math.min(Math.min(numbers[i], numbers[j]), numbers[k]);
+                        middle = 0 - max - min;
+                        set.add(max +","+ middle +"," + min);
+                    }
+                }
+            }
+        }
+        return String.valueOf(set.size());
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("-1,0,1,2,-1,-4"));
     }
 }

@@ -20,11 +20,19 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj014 {
     private static String solution(String line) {
-
-        return null;
+        String[] strs = line.split(" ");
+        String[] strNumbers = strs[0].split(",");
+        String aimNumber = strs[1];
+        int length = strNumbers.length;
+        for(int i =0; i < length; i ++) {
+            if(aimNumber.equals(strNumbers[i])) {
+                return String.valueOf(i);
+            }
+        }
+        return "-1";
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("4,5,6,7,0,1,2 6"));
     }
 }

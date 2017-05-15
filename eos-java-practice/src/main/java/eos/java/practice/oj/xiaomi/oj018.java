@@ -1,5 +1,10 @@
 package eos.java.practice.oj.xiaomi;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+
 /**
  帮小学生排队
  描述
@@ -24,11 +29,35 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj018 {
     private static String solution(String line) {
+        class MyQueue {
+            public int height;
+            public int count;
+            public MyQueue(int height, int count) {
+                this.height = height;
+                this.count = count;
+            }
+            @Override
+            public String toString() {
+                return "[" + height + "," + count + "]";
+            }
+        }
+        String strsArray = line.substring(1, line.length() - 1);
+        ArrayList<MyQueue> list = new ArrayList<MyQueue>();
+        for(int i = 1; i < strsArray.length(); i ++) {
+            char current = strsArray.charAt(i);
+            if(current == ']') {
+                int height = strsArray.charAt(i-3)-48;
+                int count = strsArray.charAt(i-1)-48;
+                list.add(new MyQueue(height,count));
+            }
+        }
+        MyQueue [] array = new MyQueue[list.size()];
+        //TODO
 
         return null;
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("[[7,0],[4,4],[7,1],[5,0],[6,1],[5,2]]"));
     }
 }
