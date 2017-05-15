@@ -32,11 +32,82 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj019 {
     private static String solution(String line) {
+        String str1 = null;
+        String str2 = null;
+        String flag = null;
+        int flagIndex = 0;
+        if((flagIndex = line.indexOf(">")) != -1) {
+            flag = ">";
+        } else if((flagIndex = line.indexOf("<")) != -1) {
+            flag = "<";
+        } else {
+            flag = "+";
+        }
+        str1 = line.substring(0,flagIndex);
+        str2 = line.substring(flagIndex+1);
+
+        char[] chars1 = str1.toCharArray();
+        char[] chars2 = str2.toCharArray();
+        if(flag.equals(">") || flag.equals("<")) {
+            //两字串位数不同
+            if(chars1.length != chars2.length) {
+                if(flag.equals(">")) {
+                    return chars1.length > chars2.length ? "Y" : "N";
+                } else {
+                    return chars1.length < chars2.length ? "Y" : "N";
+                }
+            }
+            //位数相同，逐位比较
+            int length = chars1.length;
+            if(flag.equals(">")) {
+                for(int i = 0; i < length; i++) {
+                    if(chars1[i] > chars2[i]) {
+                        return "Y";
+                    } else if(chars1[i] < chars2[i]){
+                        return "N";
+                    }
+                }
+                return "N";
+
+            } else {
+                for(int i = 0; i < length; i++) {
+                    if(chars1[i] < chars2[i]) {
+                        return "Y";
+                    } else if(chars1[i] > chars2[i]){
+                        return "N";
+                    }
+                }
+                return "N";
+            }
+        } else { //大数加法
+            int length1 = chars1.length;
+            int length2 = chars2.length;
+            StringBuffer buffer = new StringBuffer();
+            int leftValue = 0;
+            if(length1 >= length2) {
+                int diff = length1 - length2;
+                for(int i = length2-1; i >= 0; i --) {
+                    int result = chars1[i+diff] + chars2[i] - 96;
+                    if(result > 9) {
+                        //TODO
+                    }
+                }
+            } else {
+
+            }
+        }
+
 
         return null;
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+//        System.out.println(solution("972919822976663297>74058"));
+
+        char a = '0';
+        char b = '2';
+        int c = a + b - 48*2;
+        System.out.println(c);
     }
+
 }
