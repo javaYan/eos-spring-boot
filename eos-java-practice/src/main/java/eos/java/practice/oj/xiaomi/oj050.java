@@ -30,4 +30,40 @@ package eos.java.practice.oj.xiaomi;
 20
  */
 public class oj050 {
+    private static String solution(String line) {
+        String [] strings = line.split(",");
+        int length = strings.length;
+        int[] numbers = new int[length];
+        for(int i = 0; i < length; i ++) {
+            numbers[i] = Integer.parseInt(strings[i]);
+        }
+
+        int maxArea = 0;
+        int tempArea = 0;
+        int tempLength = 1;
+
+        for(int i = 0; i < length; i ++) {
+            tempArea = 0;
+            tempLength = 1;
+            for(int j = i+1; j < length; j ++) {
+                if(numbers[i] <= numbers[j]) {
+                    tempLength ++;
+                    if(j == length-1) {
+                        tempArea = numbers[i] * tempLength;
+                        maxArea = Math.max(maxArea, tempArea);
+                    }
+                } else {
+                    tempArea = numbers[i] * tempLength;
+                    maxArea = Math.max(maxArea, tempArea);
+                    break;
+                }
+            }
+        }
+
+        return String.valueOf(maxArea);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(solution("2,4,5,4,2"));
+    }
 }

@@ -30,11 +30,21 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj040 {
     private static String solution(String line) {
-
-        return null;
+        long endNumber = Long.parseLong(line);
+        long count = 0;
+        for(int i = 3; i <= endNumber; i+=2) {
+            int temp = i;
+            while(temp > 0) {
+                if(temp % 10 == 3) {
+                    count ++;
+                }
+                temp = temp / 10;
+            }
+        }
+        return String.valueOf(count);
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("30"));
     }
 }

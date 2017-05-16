@@ -33,11 +33,46 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj041 {
     private static String solution(String line) {
+        char[] chars = line.toCharArray();
+        int length = chars.length;
+        char temp;
+        int current = 0;
+        for(int i = 0; i < length; i ++) {
+            if(chars[i] == 'a') {
+                if(current != i) {
+                    temp = chars[current];
+                    chars[current] = chars[i];
+                    chars[i] = temp;
+                }
+                current ++;
+            }
+        }
 
-        return null;
+        for(int i = current; i < length; i ++) {
+            if(chars[i] == 'b') {
+                if(current != i) {
+                    temp = chars[current];
+                    chars[current] = chars[i];
+                    chars[i] = temp;
+                }
+                current ++;
+            }
+        }
+
+        for(int i = current; i < length; i ++) {
+            if(chars[i] == 'c') {
+                if(current != i) {
+                    temp = chars[current];
+                    chars[current] = chars[i];
+                    chars[i] = temp;
+                }
+                current ++;
+            }
+        }
+        return new String(chars);
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("acabcbabcbabcbba"));
     }
 }
