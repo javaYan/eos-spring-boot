@@ -35,11 +35,19 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj031 {
     private static String solution(String line) {
-
-        return null;
+        long number = Integer.parseInt(line);
+        long count = 1;
+        long mayBeMaxCount =  (number+1)/2;
+        for(long i = 2; i <= mayBeMaxCount; i ++) {
+            long temp = number+i-i*i;
+            if(temp > 0 && temp %i == 0) {
+                count ++;
+            }
+        }
+        return String.valueOf(count);
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("315009"));
     }
 }

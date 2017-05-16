@@ -22,11 +22,26 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj030 {
     private static String solution(String line) {
-
-        return null;
+        long number = Long.parseLong(line);
+        int[] bits = new int[32];
+        for(int i = 31; i >= 0; i --) {
+            if(number > 0) {
+                bits[i] = (int)(number%2);
+                number = number/2;
+            } else {
+                bits[i] = 0;
+            }
+        }
+        long reverseNumber = 0L;
+        for(int i = 0; i < 32; i ++) {
+            if(bits[i] != 0) {
+                reverseNumber += Math.pow(2, i);
+            }
+        }
+        return String.valueOf(reverseNumber);
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("4626149"));
     }
 }

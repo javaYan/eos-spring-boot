@@ -1,5 +1,7 @@
 package eos.java.practice.oj.xiaomi;
 
+import java.util.Arrays;
+
 /**
  扑克游戏
  描述
@@ -28,7 +30,19 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj029 {
     private static String solution(String line) {
+        String[] strs = line.split(",");
+        char[] xiaoMing = strs[0].toCharArray();
+        char[] laoWang = strs[1].toCharArray();
+        java.util.Arrays.sort(xiaoMing);
+        java.util.Arrays.sort(laoWang);
 
+        int xiaoMingType = 0; //小明的牌的类型
+        int[] xiaoMingMax = new int[2]; //小明的最大牌特征
+        int laoWangType = 0;  //老王的牌的类型
+        int[] laoWangMax = new int[2];  //老王的最大牌特征
+        for(int i = 0; i < 5; i ++) {
+
+        }
         return null;
     }
 
