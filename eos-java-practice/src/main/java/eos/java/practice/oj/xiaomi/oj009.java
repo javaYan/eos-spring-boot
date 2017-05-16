@@ -29,7 +29,7 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj009 {
     private static String solution(String line) {
-
+        // TODO
         int length = line.length();
 
         return null;

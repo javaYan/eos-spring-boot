@@ -26,4 +26,12 @@ package eos.java.practice.oj.xiaomi;
  7
  */
 public class oj051 {
+    private static String solution(String line) {
+        //TODO
+        return null;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(solution("2,4,5,4,2"));
+    }
 }

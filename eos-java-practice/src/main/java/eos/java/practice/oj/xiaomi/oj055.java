@@ -51,6 +51,7 @@ public class oj055 {
         //对剩下的为1的位置，类似上述过程 直到全部为0截止
         //输出count
 
+        //TODO
         return "";
     }
 
