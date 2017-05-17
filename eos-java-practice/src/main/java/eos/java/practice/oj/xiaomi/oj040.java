@@ -30,6 +30,7 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj040 {
     private static String solution(String line) {
+        //TODO 时间限制1秒 需要优化
         long endNumber = Long.parseLong(line);
         long count = 0;
         for(int i = 3; i <= endNumber; i+=2) {

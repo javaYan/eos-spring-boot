@@ -31,6 +31,7 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj050 {
     private static String solution(String line) {
+        //TODO 答案错误
         String [] strings = line.split(",");
         int length = strings.length;
         int[] numbers = new int[length];
@@ -64,6 +65,6 @@ public class oj050 {
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("2,4,5,4,2"));
+        System.out.println(solution("30,76,69,71,8,55,64,2,41,33,13,1,61,67,54,95,68,6,51,64,4,100,28,94,87,82,19,23,36,50,54,67,25,23,38"));
     }
 }
