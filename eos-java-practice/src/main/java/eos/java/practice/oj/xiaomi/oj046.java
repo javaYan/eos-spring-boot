@@ -1,5 +1,6 @@
 package eos.java.practice.oj.xiaomi;
 
+
 /**
  * 数组差
  描述
@@ -22,16 +23,36 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj046 {
     private static String solution(String line) {
-        // TODO
-
-        String [] strings = line.split(",");
-        String s1 = strings[0];
-        String s2 = strings[1];
-        //优先插入或删除使位数一致
-        return "";
+        String[] strs = line.split(",");
+        int length = strs.length;
+        int [] numbers = new int[length];
+        for(int currentIndex = 0; currentIndex < length; currentIndex++) {
+            int insertNumber = Integer.parseInt(strs[currentIndex]);
+            boolean exist = false;
+            for(int index = 0; index < currentIndex; index ++) {
+                if(numbers[index] == insertNumber) {
+                    numbers[currentIndex] = 0;
+                    exist = true;
+                    break;
+                }
+            }
+            if(!exist) {
+                numbers[currentIndex] = insertNumber;
+            }
+        }
+        
+        long sum = 0;
+        for(int i = 0; i < length; i ++) {
+            if(numbers[i] < 0) {
+                sum -= numbers[i];
+            } else {
+                sum += numbers[i];
+            }
+        }
+        return String.valueOf(sum);
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("1,2,-3,1"));
     }
 }

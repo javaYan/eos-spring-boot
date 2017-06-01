@@ -1,5 +1,8 @@
 package eos.java.practice.oj.xiaomi;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 /**
  * 德州扑克
  描述
@@ -46,12 +49,41 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj045 {
     private static String solution(String line) {
-        // TODO
-
-        String [] strings = line.split(",");
-        String s1 = strings[0];
-        String s2 = strings[1];
-        //优先插入或删除使位数一致
+        //TODO
+        String[] pukes = line.split(";");
+        //如果有两种及以上花色 则排除同花顺和同花
+        //如果没有魔术牌，且不连续，则排除顺子
+        //如果有魔术牌，这判断魔术牌是否可以补足不连续的牌
+        int speciesSize = 0; 
+        int magicCount = 0;  //魔术牌的个数
+        HashSet<String> speciesSet = new HashSet<String>();
+        String [] points = new String[5];
+        int pointsCount = 0;
+        for(int i = 0; i < 5; i ++) {
+            if(!"M".equals(pukes[i])) {
+                String[] puke = pukes[i].split("");
+                speciesSet.add(puke[0]);
+                points[pointsCount++] = puke[1]; 
+            } else {
+                magicCount ++;
+            }
+        }
+        
+        speciesSize = speciesSet.size();
+        if(magicCount == 0) {
+            if(speciesSize > 1) {
+                
+            } else {
+                
+            }
+        } else {
+            if(speciesSize > 1) {
+                
+            } else {
+                
+            }
+        }
+        
         return "";
     }
 
