@@ -43,11 +43,25 @@ package eos.java.practice.oj.xiaomi;
  */
 public class oj020 {
     private static String solution(String line) {
-        // TODO
+        //TODO
+        String[] strs = line.split(" ");
+        int length = strs.length;
+        int[] numbers = new int[length];
+        int count = 0;
+        int currentLength = 3;
+        if(length >= 3) {
+            count = (length-1)*length/2;
+        }
+        while(currentLength <= length) {
+            for(int i = 0 ; i < length; i ++) {
+
+            }
+        }
+        
         return null;
     }
 
     public static void main(String[] args) {
-        System.out.println(solution("abc,badc"));
+        System.out.println(solution("2 7 4 5 6"));
     }
 }

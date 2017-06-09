@@ -28,6 +28,8 @@ package eos.java.practice.oj.xiaomi;
 public class oj051 {
     private static String solution(String line) {
         //TODO
+        //假设Fn表示n个村庄已经达成最优，则Fn+1=Fn + 第n+1个村庄与前n个村庄的最优
+        //使用递归
         return null;
     }
 
