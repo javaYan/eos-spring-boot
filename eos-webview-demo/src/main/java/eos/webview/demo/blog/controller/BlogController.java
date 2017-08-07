@@ -26,9 +26,9 @@ public class BlogController {
     @Autowired
     private BlogService blogService;
     
-    private static final String PAGE_BLOG_LIST = "blog_list";
-    private static final String PAGE_BLOG_LIST_TABLE = "blog_list_table";
-    private static final String PAGE_BLOG_DETAIL = "blog_detail";
+    private static final String PAGE_BLOG_LIST = "blog/blog_list";
+    private static final String PAGE_BLOG_LIST_TABLE = "blog/blog_list_table";
+    private static final String PAGE_BLOG_DETAIL = "blog/blog_detail";
 
     /**
      * 跳转方式查看blogs
