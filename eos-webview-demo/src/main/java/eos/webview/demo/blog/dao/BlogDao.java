@@ -25,7 +25,8 @@ public class BlogDao {
         for(long i = 1; i <= 10; i ++ ) {
             blog = new Blog();
             blog.setId(new Date().getTime());
-            blog.setName("博客名"+ i);
+            blog.setTitle("博客名"+ i);
+            blog.setContents("历史总是惊人的相似，连博客内容都一样，不信你瞧！");
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.DAY_OF_MONTH, (int)(10-i));
             blog.setCreateTime(cal.getTime());

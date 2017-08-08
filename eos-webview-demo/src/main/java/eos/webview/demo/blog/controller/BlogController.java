@@ -102,7 +102,8 @@ public class BlogController {
         }
         long id = Long.parseLong(parameterId);
         Blog blog = blogService.getBlogById(id);
-        blog.setName("更新名" + new Random().nextInt(100)+10);
+        blog.setTitle("更新名" + new Random().nextInt(100)+10);
+        blog.setContents("历史总是惊人的相似，连博客内容都一样，不信你瞧***");
         blog.setUpdateTime(new Date());
         blogService.updateById(blog);
         return PAGE_BLOG_LIST_TABLE;

@@ -37,7 +37,8 @@ public class BlogService {
     
     public Blog save() {
         Blog blog = new Blog();
-        blog.setName("增加名" + new Random().nextInt(100)+100);
+        blog.setTitle("增加名" + new Random().nextInt(100)+100);
+        blog.setContents("历史总是惊人的相似，连博客内容都一样，不信你瞧@@@@");
         blog.setCreateTime(new Date());
         blog.setUpdateTime(new Date());
         return blogDao.insert(blog);

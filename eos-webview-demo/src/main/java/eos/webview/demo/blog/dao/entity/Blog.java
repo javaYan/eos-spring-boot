@@ -16,7 +16,9 @@ import java.util.Date;
 @ToString
 public class Blog {
     private Long id;
-    private String name;
+    private String title;
+    private String contents;
+    private String author;
     private Date createTime;
     private Date updateTime;
 }
