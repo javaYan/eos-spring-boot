@@ -2,6 +2,8 @@ package eos.java.practice.calendar;
 
 import org.junit.Test;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -45,5 +47,20 @@ public class CalendarTest {
     public void testDayOfWeekInMonth() {
         Calendar c = Calendar.getInstance();
         System.out.println(c.get(Calendar.DAY_OF_WEEK_IN_MONTH));
+    }
+
+    /**
+     * DAY_OF_MONTH 
+     * DAY_OF_YEAR
+     */
+    @Test
+    public void testDay_MonthOrYear() {
+        Calendar c = Calendar.getInstance();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        for(int i = 0; i < 50; i ++) {
+            //c.add(Calendar.DAY_OF_MONTH, 1);
+            c.add(Calendar.DAY_OF_YEAR, 1);
+            System.out.println(df.format(c.getTime()));
+        }
     }
 }
