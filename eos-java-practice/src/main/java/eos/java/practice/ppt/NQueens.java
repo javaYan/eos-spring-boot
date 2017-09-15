@@ -1,4 +1,4 @@
-package eos.java.practice.ppt.divideconquer;
+package eos.java.practice.ppt;
 
 public class NQueens {  
       
