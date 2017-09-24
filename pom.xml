@@ -16,6 +16,7 @@
         <module>eos-thymeleaf</module>
         <module>eos-oj</module>
         <module>eos-webview-demo</module>
+        <module>eos-java8</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -28,7 +29,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.7</java.version>
+        <java.version>1.8</java.version>
         <initialMemorySize>256M</initialMemorySize>
         <maxMemorySize>256M</maxMemorySize>
 
