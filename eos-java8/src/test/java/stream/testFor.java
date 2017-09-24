@@ -107,6 +107,7 @@ public class testFor {
             }
         });
         subList.forEach(System.out::println);
+
         
     }
 }
